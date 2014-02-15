@@ -1,0 +1,40 @@
+{
+	"name": "domdocument",
+	"description": "Full DOM level 3 implementation",
+	"version": "0.0.1",
+	"homepage": "https://github.com/rspieker/node_domdocument",
+	"license": "MIT",
+
+	"keywords": [
+		"dom",
+		"document"
+	],
+
+	"author": {
+		"name": "Rogier Spieker",
+		"email": "spieker@gmail.com"
+	},
+
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/rspieker/node_domdocument"
+	},
+
+	"bugs": {
+		"url": "https://github.com/rspieker/node_domdocument/issues"
+	},
+
+	"engines": {
+		"node": ">=0.8"
+	},
+
+	"dependencies": {
+		"node-expat": "~2.1.4"
+	},
+
+	"main": "./lib/dom.js",
+
+	"directories": {
+		"lib": "./lib"
+	}
+}
