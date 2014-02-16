@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+
+<!--  Don't get blown away by the apparent XML syntax, HTML5 allows for this  -->
+
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>DOMDocument Tests</title>
+	</head>
+	<body>
+		<strong>Here be demons</strong>
+		<![CDATA[ may contain <anything> ]]>
+	</body>
+</html>
