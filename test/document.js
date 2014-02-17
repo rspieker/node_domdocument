@@ -37,8 +37,9 @@ suite('DOM', function(){
 			//  obtain the first 10 characters
 			assert.equal(document.firstChild.substringData(0, 10), 'blown away');
 
-			//  obtain the first 10 characters
-			assert.equal(document.firstChild.substringData(41, 10), 'HTML5');
+			//  obtain the last 10 characters starting 5 chars from the end.
+			length = document.firstChild.nodeValue.length;
+			assert.equal(document.firstChild.substringData(length - 5, 10), 'HTML5');
 
 			//  test the data property
 			assert.equal(document.firstChild.nodeValue, document.firstChild.data);
