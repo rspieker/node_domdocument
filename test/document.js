@@ -1,6 +1,13 @@
 var assert = require('assert'),
 	DOMDocument = require('./../lib/dom.js');
 
+function elapsed(time, prec)
+{
+	var delta = process.hrtime(time);
+	prec = prec || 1e3;
+
+	return Math.round(((delta[0] * 1e3) + (delta[1] / 1e6)) * prec) / prec;
+}
 
 suite('DOM', function(){
 
@@ -10,13 +17,12 @@ suite('DOM', function(){
 			length;
 
 		dom.load(__dirname + '/test.xml', function(error, document){
-			console.log(process.hrtime(time)[0] / 1e6);
+//			console.log(elapsed(time));
 
 			assert.equal(document.nodeType, 9);
 			assert.equal(document.nodeName, '#document');
 
 			assert.equal(document.childNodes.length, 2);
-			console.log(document.childNodes[1], '' + document.childNodes[1]);
 
 			assert.equal(document.firstChild.nodeValue, '  Don\'t get blown away by the apparent XML syntax, HTML5 allows for this  ');
 
@@ -55,25 +61,49 @@ suite('DOM', function(){
 
 	test('Attribute', function(done){
 		var dom = new DOMDocument(),
-			time = process.hrtime();
+			time = process.hrtime(),
+			lang, i;
 
 		dom.load(__dirname + '/test.xml', function(error, document){
-			var lang;
+//			console.log(elapsed(time));
 
-			console.log(process.hrtime(time)[0] / 1e6);
-
-			//  lookups
+			//  lookups on the element.attributes property
 			assert.equal(document.documentElement.attributes.length, 1);
-			assert.equal(document.documentElement.attributes.item(0).name, 'lang');
-			assert.equal(document.documentElement.attributes.item(0).value, 'en');
-			assert.equal(document.documentElement.getAttribute('lang'), 'en');
 			lang = document.documentElement.attributes.item(0);
+			assert.equal(lang.name, 'lang');
+			assert.equal(lang.value, 'en');
 
-			//  removal
+			//  lookups on the element itself
+			assert.equal(document.documentElement.getAttribute('lang'), 'en');
+
+			//  removal (we cannot let mocha compare the result to lang, so we do it ourselves and see it it resolves to true)
 			assert.equal(document.documentElement.attributes.removeNamedItem('lang') === lang, true);
-			//  removing it again would result in null as it no longer exists
-			assert.equal(document.documentElement.attributes.removeNamedItem('lang') === lang, false);
+			assert.equal(document.documentElement.attributes.length, 0);
 
+			//  removing it again would result in null as it no longer exists
+			assert.equal(document.documentElement.attributes.removeNamedItem('lang'), null);
+
+			//  manipulating
+			assert.equal(document.documentElement.setAttribute('lang', 'nl'));
+			assert.equal(document.documentElement.attributes.length, 1);
+			assert.equal(document.documentElement.getAttribute('lang'), 'nl');
+
+			for (i = 0; i < 10; ++i)
+			{
+				assert.equal(document.documentElement.setAttribute('test' + i, i));
+				assert.equal(document.documentElement.attributes.length, 2 + i);
+				assert.equal(document.documentElement.getAttribute('test' + i), i);
+			}
+
+			for (i = 10; i >= 0; --i)
+			{
+				document.documentElement.removeAttribute('test' + i);
+				assert.equal(document.documentElement.attributes.length, 1 + i);
+			}
+
+			lang = document.documentElement.attributes.item(0);
+			assert.equal(document.documentElement.removeAttributeNode(lang) === lang, true);
+			assert.equal(document.documentElement.attributes.length, 0);
 
 			done();
 		});
