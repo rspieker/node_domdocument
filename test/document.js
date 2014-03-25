@@ -6,14 +6,17 @@ suite('DOM', function(){
 
 	test('Document', function(done){
 		var dom = new DOMDocument(),
+			time = process.hrtime(),
 			length;
 
 		dom.load(__dirname + '/test.xml', function(error, document){
+			console.log(process.hrtime(time)[0] / 1e6);
 
 			assert.equal(document.nodeType, 9);
 			assert.equal(document.nodeName, '#document');
 
 			assert.equal(document.childNodes.length, 2);
+			console.log(document.childNodes[1], '' + document.childNodes[1]);
 
 			assert.equal(document.firstChild.nodeValue, '  Don\'t get blown away by the apparent XML syntax, HTML5 allows for this  ');
 
@@ -44,8 +47,35 @@ suite('DOM', function(){
 			//  test the data property
 			assert.equal(document.firstChild.nodeValue, document.firstChild.data);
 
+
 			done();
 		});
 
+	});
+
+	test('Attribute', function(done){
+		var dom = new DOMDocument(),
+			time = process.hrtime();
+
+		dom.load(__dirname + '/test.xml', function(error, document){
+			var lang;
+
+			console.log(process.hrtime(time)[0] / 1e6);
+
+			//  lookups
+			assert.equal(document.documentElement.attributes.length, 1);
+			assert.equal(document.documentElement.attributes.item(0).name, 'lang');
+			assert.equal(document.documentElement.attributes.item(0).value, 'en');
+			assert.equal(document.documentElement.getAttribute('lang'), 'en');
+			lang = document.documentElement.attributes.item(0);
+
+			//  removal
+			assert.equal(document.documentElement.attributes.removeNamedItem('lang') === lang, true);
+			//  removing it again would result in null as it no longer exists
+			assert.equal(document.documentElement.attributes.removeNamedItem('lang') === lang, false);
+
+
+			done();
+		});
 	});
 });
