@@ -62,7 +62,7 @@ suite('DOM', function(){
 	test('Attribute', function(done){
 		var dom = new DOMDocument(),
 			time = process.hrtime(),
-			lang, i;
+			lang, head, i;
 
 		dom.load(__dirname + '/test.xml', function(error, document){
 //			console.log(elapsed(time));
@@ -104,6 +104,10 @@ suite('DOM', function(){
 			lang = document.documentElement.attributes.item(0);
 			assert.equal(document.documentElement.removeAttributeNode(lang) === lang, true);
 			assert.equal(document.documentElement.attributes.length, 0);
+
+
+			head = document.getElementsByTagName('head');
+			head[0].setAttributeNode(lang);
 
 			done();
 		});
