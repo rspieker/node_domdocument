@@ -23,13 +23,13 @@
     "node": ">=0.8"
   },
   "dependencies": {
-    "node-expat": "~2.1.4"
+    "node-expat": "~2.2.0"
   },
   "main": "./lib/dom.js",
   "directories": {
     "lib": "./lib"
   },
   "devDependencies": {
-    "mocha": "~1.17.1"
+    "mocha": "~1.18.2"
   }
 }
