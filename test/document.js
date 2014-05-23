@@ -72,6 +72,7 @@ suite('DOM', function(){
 			lang = document.documentElement.attributes.item(0);
 			assert.equal(lang.name, 'lang');
 			assert.equal(lang.value, 'en');
+			assert.equal(lang.ownerElement.nodeName, 'html');
 
 			//  lookups on the element itself
 			assert.equal(document.documentElement.getAttribute('lang'), 'en');
@@ -112,4 +113,37 @@ suite('DOM', function(){
 			done();
 		});
 	});
+
+	test('textContent', function(done){
+		var dom = new DOMDocument('1.0', 'utf-8'),
+			time = process.hrtime();
+
+		dom.loadXML('<root>My Text<child>My Child</child></root>', function(error, document){
+			var root = document.documentElement,
+				content = 'My TextMy Child',
+				children = root.childNodes.length,
+				i;
+
+			//  initialization tests
+			assert.equal(root.nodeName, 'root');
+			assert.equal(root.textContent, content);
+
+			//  add nodes with content
+			for (i = 0; i < 10; ++i)
+			{
+				root.appendChild(document.createElement('added')).appendChild(document.createTextNode('Added #' + i));
+				content += 'Added #' + i;
+			}
+			assert.equal(root.textContent, content);
+			assert.equal(root.childNodes.length, children + 10);
+
+			content = 'empty';
+			root.textContent = content;
+			assert.equal(root.textContent, content);
+			assert.equal(root.childNodes.length, 1);
+
+			done();
+		});
+	});
+
 });
