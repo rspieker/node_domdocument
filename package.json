@@ -23,7 +23,7 @@
     "node": ">=0.8"
   },
   "dependencies": {
-    "node-expat": "~2.2.0"
+    "node-expat": "~2.3.1"
   },
   "main": "./lib/dom.js",
   "directories": {

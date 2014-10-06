@@ -53,10 +53,27 @@ suite('DOM', function(){
 			//  test the data property
 			assert.equal(document.firstChild.nodeValue, document.firstChild.data);
 
-
 			done();
 		});
 
+	});
+
+	test('Element', function(done){
+		var dom = new DOMDocument(),
+			time = process.hrtime(),
+			length;
+
+		dom.load(__dirname + '/test.xml', function(error, document){
+
+			var strong = document.getElementsByTagName('strong');
+
+			assert.equal(strong.length, 1);
+			assert.equal(strong[0].nodeName, 'strong');
+			assert.equal(strong[0].localName, 'strong');
+			assert.equal(strong[0].prefix, null);
+
+			done();
+		});
 	});
 
 	test('Attribute', function(done){
