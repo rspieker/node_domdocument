@@ -68,7 +68,8 @@ suite('DOM', function(){
 			var strong = document.getElementsByTagName('strong'),
 				a = document.createElement('a'),
 				b = document.createElement('b'),
-				c;
+				c, bcn;
+
 
 			assert.equal(strong.length, 1);
 			assert.equal(strong[0].nodeName, 'strong');
@@ -76,12 +77,19 @@ suite('DOM', function(){
 			assert.equal(strong[0].prefix, null);
 
 			body = strong[0].parentNode;
+			bcn  = body.childNodes;
 			assert.equal(body.nodeName, 'body');
+
+			//  childNodes should be a 'live' NodeList instance, which means it will adapt to changes
+			assert.equal(bcn.length, 8);
+			assert.equal(body.childNodes.length, 8);
 
 			//  insert a last, insert b before it
 			//  <body>....<b/><a/>
 			assert.equal(body.appendChild(a), a);
 			assert.equal(body.insertBefore(b, a), b);
+			assert.equal(bcn.length, 10);
+			assert.equal(body.childNodes.length, 10);
 
 			assert.equal(a.parentNode, body);
 			assert.equal(b.parentNode, body);
@@ -99,6 +107,15 @@ suite('DOM', function(){
 			assert.equal(b.previousSibling, a);
 			assert.equal(a.nextSibling, b);
 			assert.equal(b.nextSibling, null);
+
+			assert.equal(body.removeChild(a), a);
+			assert.equal(body.childNodes.length, 9);
+
+			assert.equal(body.removeChild(b), b);
+			assert.equal(body.childNodes.length, 8);
+
+			assert.equal(body.removeChild(c), c);
+			assert.equal(body.childNodes.length, 7);
 
 			done();
 		});
