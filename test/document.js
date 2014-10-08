@@ -163,4 +163,33 @@ suite('DOM', function(){
 		});
 	});
 
+	test('wholeText', function(done){
+		var dom = new DOMDocument('1.0', 'utf-8'),
+			time = process.hrtime();
+
+		dom.loadXML('<root />', function(error, document){
+			var root = document.documentElement,
+				content = '',
+				i;
+
+			//  add nodes with content
+			for (i = 0; i < 10; ++i)
+			{
+				root.appendChild(document.createTextNode('Added #' + i));
+				content += 'Added #' + i;
+			}
+			assert.equal(root.textContent, content);
+			assert.equal(root.childNodes.length, 10);
+
+			for (i = 0; i < root.childNodes.length; ++i)
+				assert.equal(root.childNodes[i].wholeText, content);
+
+			root.childNodes[4].replaceWholeText('trololo');
+			assert.equal(root.childNodes.length, 1);
+			assert.equal(root.textContent, 'trololo');
+
+			done();
+		});
+	});
+
 });
