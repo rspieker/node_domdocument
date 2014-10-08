@@ -65,12 +65,40 @@ suite('DOM', function(){
 
 		dom.load(__dirname + '/test.xml', function(error, document){
 
-			var strong = document.getElementsByTagName('strong');
+			var strong = document.getElementsByTagName('strong'),
+				a = document.createElement('a'),
+				b = document.createElement('b'),
+				c;
 
 			assert.equal(strong.length, 1);
 			assert.equal(strong[0].nodeName, 'strong');
 			assert.equal(strong[0].localName, 'strong');
 			assert.equal(strong[0].prefix, null);
+
+			body = strong[0].parentNode;
+			assert.equal(body.nodeName, 'body');
+
+			//  insert a last, insert b before it
+			//  <body>....<b/><a/>
+			assert.equal(body.appendChild(a), a);
+			assert.equal(body.insertBefore(b, a), b);
+
+			assert.equal(a.parentNode, body);
+			assert.equal(b.parentNode, body);
+			assert.equal(a.previousSibling, b);
+			c = b.previousSibling;
+			assert.equal(b.nextSibling, a);
+			assert.equal(a.nextSibling, null);
+
+			//  move a before b
+			//  <body>....<a/><b/>
+			assert.equal(body.insertBefore(a, b), a);
+			assert.equal(a.parentNode, body);
+			assert.equal(b.parentNode, body);
+			assert.equal(a.previousSibling, c);
+			assert.equal(b.previousSibling, a);
+			assert.equal(a.nextSibling, b);
+			assert.equal(b.nextSibling, null);
 
 			done();
 		});
