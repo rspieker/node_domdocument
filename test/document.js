@@ -58,6 +58,44 @@ suite('DOM', function(){
 
 	});
 
+	test('Multiple Documents', function(done){
+		var domA = new DOMDocument(),
+			domB = new DOMDocument(),
+			docs = [];
+
+
+		function test()
+		{
+			var a = docs.pop(),
+				b = docs.pop(),
+				tmp = a.createElement('imported'),
+				child;
+
+			while (b.documentElement.firstChild)
+			{
+				child = a.adoptNode(b.documentElement.firstChild);
+
+				assert.equal(child.ownerDocument, a);
+				tmp.appendChild(child);
+			}
+			a.documentElement.appendChild(tmp);
+
+			done();
+		}
+
+		domA.load(__dirname + '/test.xml', function(error, document){
+			docs.push(document);
+			if (docs.length === 2)
+				test();
+		});
+
+		domB.load(__dirname + '/test.xml', function(error, document){
+			docs.push(document);
+			if (docs.length === 2)
+				test();
+		});
+	});
+
 	test('Element', function(done){
 		var dom = new DOMDocument(),
 			time = process.hrtime(),
