@@ -72,10 +72,21 @@ lab.experiment('Document', function(){
 
 			while (b.documentElement.firstChild)
 			{
-				child = a.adoptNode(b.documentElement.firstChild);
+				child = b.documentElement.firstChild;
 
+				//  verify the child node to be part of document B and in B's documentElement
+				Lab.expect(child.ownerDocument).to.equal(b);
+				Lab.expect(child.parentNode).to.equal(b.documentElement);
+
+				//  we expect the child itself not to be changed (e.g. not a copy, but a true move)
+				Lab.expect(a.adoptNode(child)).to.equal(child);
+				//  it should no longer be 'connected' to a parent
+				Lab.expect(child.parentNode).to.equal(null);
+
+				//  verify the child node to be part of document A
 				Lab.expect(child.ownerDocument).to.equal(a);
 				tmp.appendChild(child);
+				Lab.expect(child.parentNode).to.equal(tmp);
 			}
 
 			done();
