@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+<!DOCTYPE html [
+    <!ENTITY nbsp "&#160;">
+]>
 
 <!--  Don't get blown away by the apparent XML syntax, HTML5 allows for this  -->
 

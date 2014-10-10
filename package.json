@@ -30,6 +30,6 @@
     "lib": "./lib"
   },
   "devDependencies": {
-    "mocha": "~1.18.2"
+    "lab": "^4.6.2"
   }
 }
