@@ -1,6 +1,7 @@
 var Lab = require('lab'),
 	lab = exports.lab = Lab.script(),
-	DOMDocument = require('./../lib/dom.js');
+	DOMDocument = require('./../lib/dom.js'),
+	DOMException = require('./../lib/dom/exception.js');
 
 
 lab.experiment('Document', function(){
