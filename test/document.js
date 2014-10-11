@@ -94,6 +94,34 @@ lab.experiment('Document', function(){
 		});
 	});
 
+	lab.test('Comment', function(done){
+
+		var dom = new DOMDocument('1.0', 'utf-8');
+
+		dom.loadXML('<root />', function(error, document){
+			var comment = document.createComment('This is a comment');
+
+			//  creation
+			Lab.expect(comment.nodeType).to.equal(8);
+			Lab.expect(comment.nodeName).to.equal('#comment');
+			Lab.expect(comment.nodeValue).to.equal(comment.data);
+			Lab.expect(comment.nodeValue).to.equal('This is a comment');
+			Lab.expect(comment.parentNode).to.equal(null);
+			Lab.expect(comment.ownerDocument).to.equal(document);
+
+			//  attachment/releasing
+			Lab.expect(document.documentElement.appendChild(comment)).to.equal(comment);
+			Lab.expect(comment.parentNode).to.equal(document.documentElement);
+			Lab.expect(document.documentElement.removeChild(comment)).to.equal(comment);
+			Lab.expect(comment.parentNode).to.equal(null);
+
+			Lab.expect(comment + '').to.equal('[object DOMComment]');
+
+			done();
+		});
+
+	});
+
 	lab.test('Element', function(done){
 		var time = process.hrtime(),
 			length;
