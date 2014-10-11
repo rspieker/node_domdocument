@@ -96,27 +96,25 @@ lab.experiment('Comment', function(){
 
 	});
 
-	lab.experiment('Attachment and releasing', function(){
+	lab.test('attachment and removal', function(done){
 
-		lab.test('Comment', function(done){
-			new DOMDocument().loadXML('<root />', function(error, document){
-				var body = 'This is a comment',
-					comment = document.createComment(body);
+		new DOMDocument().loadXML('<root />', function(error, document){
+			var body = 'This is a comment',
+				comment = document.createComment(body);
 
-				//  newly create comments do not have a parentNode, but do belong to the document
-				Lab.expect(comment.parentNode).to.equal(null);
-				Lab.expect(comment.ownerDocument).to.equal(document);
+			//  newly create comments do not have a parentNode, but do belong to the document
+			Lab.expect(comment.parentNode).to.equal(null);
+			Lab.expect(comment.ownerDocument).to.equal(document);
 
-				//  appending the comment to an element will change its parent
-				Lab.expect(document.documentElement.appendChild(comment)).to.equal(comment);
-				Lab.expect(comment.parentNode).to.equal(document.documentElement);
+			//  appending the comment to an element will change its parent
+			Lab.expect(document.documentElement.appendChild(comment)).to.equal(comment);
+			Lab.expect(comment.parentNode).to.equal(document.documentElement);
 
-				//  as does removing it from the parent
-				Lab.expect(document.documentElement.removeChild(comment)).to.equal(comment);
-				Lab.expect(comment.parentNode).to.equal(null);
+			//  as does removing it from the parent
+			Lab.expect(document.documentElement.removeChild(comment)).to.equal(comment);
+			Lab.expect(comment.parentNode).to.equal(null);
 
-				done();
-			});
+			done();
 		});
 
 	});
