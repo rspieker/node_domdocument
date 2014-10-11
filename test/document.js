@@ -1,6 +1,7 @@
 var Lab = require('lab'),
 	lab = exports.lab = Lab.script(),
-	DOMDocument = require('./../lib/dom.js');
+	DOMDocument = require('./../lib/dom.js'),
+	DOMException = require('./../lib/dom/exception.js');
 
 
 lab.experiment('Document', function(){
@@ -99,15 +100,52 @@ lab.experiment('Document', function(){
 		var dom = new DOMDocument('1.0', 'utf-8');
 
 		dom.loadXML('<root />', function(error, document){
-			var comment = document.createComment('This is a comment');
+			var body = 'This is a comment',
+				comment = document.createComment(body);
 
 			//  creation
 			Lab.expect(comment.nodeType).to.equal(8);
 			Lab.expect(comment.nodeName).to.equal('#comment');
 			Lab.expect(comment.nodeValue).to.equal(comment.data);
-			Lab.expect(comment.nodeValue).to.equal('This is a comment');
+			Lab.expect(comment.nodeValue).to.equal(body);
 			Lab.expect(comment.parentNode).to.equal(null);
 			Lab.expect(comment.ownerDocument).to.equal(document);
+			Lab.expect(comment.length).to.equal(17);
+
+
+			//  manipulate contents
+			comment.replaceData(10, 0, 'successful ');
+			Lab.expect(comment.length).to.equal(28);
+			Lab.expect(comment.nodeValue).to.equal(comment.data);
+			Lab.expect(comment.nodeValue).to.equal('This is a successful comment');
+
+			comment.insertData(10, 'most ');
+			Lab.expect(comment.length).to.equal(33);
+			Lab.expect(comment.nodeValue).to.equal(comment.data);
+			Lab.expect(comment.nodeValue).to.equal('This is a most successful comment');
+
+			comment.replaceData(15, 7, 'wonder');
+			Lab.expect(comment.length).to.equal(32);
+			Lab.expect(comment.nodeValue).to.equal(comment.data);
+			Lab.expect(comment.nodeValue).to.equal('This is a most wonderful comment');
+
+			comment.deleteData(10, 15);
+			Lab.expect(comment.length).to.equal(17);
+			Lab.expect(comment.nodeValue).to.equal(comment.data);
+			Lab.expect(comment.nodeValue).to.equal('This is a comment');
+
+
+			//  exceeding the boundaries of manipulation
+			Lab.expect(function(){
+				comment.deleteData(-1, 100);
+			}).to.throw(DOMException, 'INDEX_SIZE_ERR');
+			Lab.expect(function(){
+				comment.insertData(-1, 'exception...');
+			}).to.throw(DOMException, 'INDEX_SIZE_ERR');
+			Lab.expect(function(){
+				comment.replaceData(80, 0, 'exception..');
+			}).to.throw(DOMException, 'INDEX_SIZE_ERR');
+
 
 			//  attachment/releasing
 			Lab.expect(document.documentElement.appendChild(comment)).to.equal(comment);
