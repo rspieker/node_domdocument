@@ -96,10 +96,27 @@ lab.experiment('Document', function(){
 				Lab.expect(child.parentNode).to.equal(null);
 
 				//  verify the child node to be part of document A
-				Lab.expect(child.ownerDocument).to.equal(a);
+				Lab.expect(child.ownerDocument).to.equal(tmp.ownerDocument);
 				tmp.appendChild(child);
 				Lab.expect(child.parentNode).to.equal(tmp);
 			}
+
+			//  import the child from (now) A into B, a shallow import
+			tmp = b.importNode(a.documentElement);
+			Lab.expect(tmp.ownerDocument).to.equal(b);
+			Lab.expect(tmp.childNodes.length).to.equal(0);
+			Lab.expect(tmp.firstChild).to.equal(null);
+			Lab.expect(b.documentElement.appendChild(tmp)).to.equal(tmp);
+			Lab.expect(tmp.parentNode).to.equal(b.documentElement);
+
+			//  import the child from (now) A into B, a deep import
+			tmp = b.importNode(a.documentElement, true);
+			Lab.expect(tmp.ownerDocument).to.equal(b);
+			Lab.expect(tmp.childNodes.length).to.equal(7);
+			Lab.expect(tmp.firstChild).not.to.equal(null);
+			Lab.expect(tmp.firstChild.nodeType).to.equal(3);
+			Lab.expect(b.documentElement.appendChild(tmp)).to.equal(tmp);
+			Lab.expect(tmp.parentNode).to.equal(b.documentElement);
 
 			done();
 		}
