@@ -1,14 +1,26 @@
 var Lab = require('lab'),
 	lab = exports.lab = Lab.script(),
 	DOMDocument = require('./../lib/dom.js'),
+	Document = require('./../lib/dom/document.js');
 	DOMException = require('./../lib/dom/exception.js');
 
 
 lab.experiment('Document', function(){
 
+	lab.test('Direct creation', function(done){
+		var document = new Document();
+
+		Lab.expect(document.nodeType).to.equal(9);
+		Lab.expect(document.nodeName).to.equal('#document');
+
+		Lab.expect(document.documentElement).to.equal(null);
+
+		done();
+	});
+
 	lab.test('Node existence and typing', function(done){
 
-		new DOMDocument().load(__dirname + '/test.xml', function(error, document){
+		new DOMDocument().load(__dirname + '/files/basic.xml', function(error, document){
 			var length;
 
 			Lab.expect(document.nodeType).to.equal(9);
@@ -74,7 +86,6 @@ lab.experiment('Document', function(){
 			while (b.documentElement.firstChild)
 			{
 				child = b.documentElement.firstChild;
-
 				//  verify the child node to be part of document B and in B's documentElement
 				Lab.expect(child.ownerDocument).to.equal(b);
 				Lab.expect(child.parentNode).to.equal(b.documentElement);
@@ -93,13 +104,13 @@ lab.experiment('Document', function(){
 			done();
 		}
 
-		new DOMDocument().load(__dirname + '/test.xml', function(error, document){
+		new DOMDocument().load(__dirname + '/files/basic.xml', function(error, document){
 			docs.push(document);
 			if (docs.length === 2)
 				test();
 		});
 
-		new DOMDocument().load(__dirname + '/test.xml', function(error, document){
+		new DOMDocument().load(__dirname + '/files/basic.xml', function(error, document){
 			docs.push(document);
 			if (docs.length === 2)
 				test();
@@ -110,7 +121,7 @@ lab.experiment('Document', function(){
 		var time = process.hrtime(),
 			length;
 
-		new DOMDocument().load(__dirname + '/test.xml', function(error, document){
+		new DOMDocument().load(__dirname + '/files/basic.xml', function(error, document){
 			var strong = document.getElementsByTagName('strong'),
 				a = document.createElement('a'),
 				b = document.createElement('b'),
@@ -171,7 +182,7 @@ lab.experiment('Document', function(){
 		var time = process.hrtime(),
 			lang, head, i;
 
-		new DOMDocument().load(__dirname + '/test.xml', function(error, document){
+		new DOMDocument().load(__dirname + '/files/basic.xml', function(error, document){
 
 			//  lookups on the element.attributes property
 			Lab.expect(document.documentElement.attributes.length).to.equal(1);

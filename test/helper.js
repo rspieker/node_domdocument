@@ -5,7 +5,7 @@ var Lab = require('lab'),
 
 lab.experiment('Helper', function(){
 
-	lab.test('Combine values', function(done){
+	lab.test('combine values', function(done){
 		var complex = {
 				leet: 1337,
 				pi: Math.PI,
@@ -79,6 +79,63 @@ lab.experiment('Helper', function(){
 		//  Array is an Object type, try to combine it with an object, it should result in an object, converting the array keys (indices) to object properties
 		Lab.expect(helper.combine({ok:true}, [1, 2, 3])).to.eql({0:1, 1:2, 2:3, ok:true});
 		Lab.expect(helper.combine([1, 2, 3], {ok:true})).to.eql({0:1, 1:2, 2:3, ok:true});
+
+		done();
+	});
+
+
+	lab.test('decoration', function(done){
+		var property = {
+				test: 'ok',
+				test2: null
+			},
+			deco;
+
+
+		function Deco()
+		{
+			//  used in the decoration tests
+		}
+		Deco.prototype.___property = function(){
+			return {
+				key: {key: 'test'},
+				lockedKey: {key: 'test', locked: true},
+				lockedValue: {value: 'test', locked: true},
+				lockedUnknown: {locked: true, key: 'do not define'},
+				magic: {},
+				setter: {
+					set: true,
+					key: 'test2'
+				},
+				setter2: {
+					set: true
+				}
+			};
+		};
+		Deco.prototype.___get_magic = function(){
+			return 'magical';
+		};
+
+
+		deco = new Deco();
+		helper.decorate(deco, property);
+
+
+		Lab.expect(deco.key).to.equal('ok');
+		Lab.expect(deco.lockedKey).to.equal('ok');
+		Lab.expect(deco.lockedValue).to.equal('test');
+		Lab.expect(deco.lockedUnknown).to.equal(null);
+
+		//  removal should trigger the internal getter flow which has nothing to execute or lookup and must trigger null
+		Lab.expect(deco.magic).to.equal('magical');
+		deco.___get_magic = false;
+		Lab.expect(deco.magic).to.equal(null);
+
+		deco.setter = 'x'
+		Lab.expect(deco.setter).to.equal('x');
+
+		deco.setter2 = 'y'
+		Lab.expect(deco.setter2).to.equal(null);
 
 		done();
 	});
