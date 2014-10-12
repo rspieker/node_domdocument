@@ -130,6 +130,7 @@ lab.experiment('Document', function(){
 			Lab.expect(strong.length).to.equal(1);
 			Lab.expect(strong[0].nodeName).to.equal('strong');
 			Lab.expect(strong[0].localName).to.equal('strong');
+			Lab.expect(strong[0] + '').to.equal('[object DOMStrongNode]');
 			Lab.expect(strong[0].prefix).to.equal(null);
 
 			body = strong[0].parentNode;
