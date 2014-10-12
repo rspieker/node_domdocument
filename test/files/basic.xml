@@ -10,7 +10,7 @@
 		<title>DOMDocument Tests</title>
 	</head>
 	<body>
-		<strong>Here be demons</strong>
+		<strong id="findme">Here be demons</strong>
 		<![CDATA[ may contain <anything> ]]>
 	</body>
 </html>

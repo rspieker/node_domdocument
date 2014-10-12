@@ -99,7 +99,16 @@ lab.experiment('Document', function(){
 				Lab.expect(child.ownerDocument).to.equal(tmp.ownerDocument);
 				tmp.appendChild(child);
 				Lab.expect(child.parentNode).to.equal(tmp);
+
 			}
+
+			//  create a new node, which has no parent and no children, in order to test all flows of adoptNode
+			child = b.createElement('adopt');
+			Lab.expect(child.ownerDocument).to.equal(b);
+			Lab.expect(child.parentNode).to.equal(null);
+			Lab.expect(child.firstChild).to.equal(null);
+			Lab.expect(a.adoptNode(child)).to.equal(child);
+			Lab.expect(child.ownerDocument).to.equal(a);
 
 			//  import the child from (now) A into B, a shallow import
 			tmp = b.importNode(a.documentElement);
@@ -154,6 +163,8 @@ lab.experiment('Document', function(){
 			bcn  = body.childNodes;
 			Lab.expect(body.nodeName).to.equal('body');
 
+			Lab.expect(document.getElementById('findme')).to.equal(strong[0]);
+
 			//  childNodes should be a 'live' NodeList instance, which means it will adapt to changes
 			Lab.expect(bcn.length).to.equal(8);
 			Lab.expect(body.childNodes.length).to.equal(8);
@@ -192,6 +203,14 @@ lab.experiment('Document', function(){
 			Lab.expect(body.childNodes.length).to.equal(7);
 
 			done();
+		});
+
+		new DOMDocument().loadXML('<root><item id="one">one</item><nest><nested id="one">one</nested></nest></root>', function(error, document){
+
+			//  the id 'one' occurs more than once in the document, it should return nothing at all (not even null)
+			Lab.expect(document.getElementById('one')).to.equal(undefined);
+			//  the id 'two' does not exist, it should return null
+			Lab.expect(document.getElementById('two')).to.equal(null);
 		});
 	});
 

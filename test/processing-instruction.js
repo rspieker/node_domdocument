@@ -24,7 +24,7 @@ lab.experiment('Processing Instruction', function(){
 	});
 
 
-	lab.test('properties', function(done){
+	lab.test('attachment', function(done){
 		new DOMDocument().loadXML('<root />', function(error, document){
 
 			var pi = document.createProcessingInstruction('xml-stylesheet', 'href="mycss.css" type="text/css"');
