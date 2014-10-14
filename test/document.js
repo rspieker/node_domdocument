@@ -1,7 +1,7 @@
 var Lab = require('lab'),
 	lab = exports.lab = Lab.script(),
 	DOMDocument = require('./../lib/dom.js'),
-	Document = require('./../lib/dom/document.js');
+	Document = require('./../lib/dom/document.js'),
 	DOMException = require('./../lib/dom/exception.js'),
 	XMLSerializer = require('./../lib/xmlserializer.js');
 
@@ -147,81 +147,19 @@ lab.experiment('Document', function(){
 		});
 	});
 
-	lab.test('Element', function(done){
-		var time = process.hrtime(),
-			length;
-
-		new DOMDocument().load(__dirname + '/files/basic.xml', function(error, document){
-			var strong = document.getElementsByTagName('strong'),
-				a = document.createElement('a'),
-				b = document.createElement('b'),
-				c, bcn, body;
-
-			Lab.expect(document.lastChild.nodeName).to.equal('html');
-
-			Lab.expect(strong.length).to.equal(1);
-			Lab.expect(strong[0].nodeName).to.equal('strong');
-			Lab.expect(strong[0].localName).to.equal('strong');
-			Lab.expect(strong[0] + '').to.equal('[object DOMStrongNode]');
-			Lab.expect(strong[0].prefix).to.equal(null);
-			Lab.expect(strong[0].firstChild).to.equal(strong[0].lastChild);
-			Lab.expect(strong.item(0)).to.equal(strong[0]);
-			Lab.expect(strong.item(100)).to.equal(null);
-
-			body = strong[0].parentNode;
-			bcn  = body.childNodes;
-			Lab.expect(body.nodeName).to.equal('body');
-
-			Lab.expect(document.getElementById('findme')).to.equal(strong[0]);
-
-			//  childNodes should be a 'live' NodeList instance, which means it will adapt to changes
-			Lab.expect(bcn.length).to.equal(8);
-			Lab.expect(body.childNodes.length).to.equal(8);
-
-			//  insert a last, insert b before it
-			//  <body>....<b/><a/>
-			Lab.expect(body.appendChild(a)).to.equal(a);
-			Lab.expect(body.insertBefore(b, a)).to.equal(b);
-			Lab.expect(bcn.length).to.equal(10);
-			Lab.expect(body.childNodes.length).to.equal(10);
-
-			Lab.expect(a.parentNode).to.equal(body);
-			Lab.expect(b.parentNode).to.equal(body);
-			Lab.expect(a.previousSibling).to.equal(b);
-			c = b.previousSibling;
-			Lab.expect(b.nextSibling).to.equal(a);
-			Lab.expect(a.nextSibling).to.equal(null);
-
-			//  move a before b
-			//  <body>....<a/><b/>
-			Lab.expect(body.insertBefore(a, b)).to.equal(a);
-			Lab.expect(a.parentNode).to.equal(body);
-			Lab.expect(b.parentNode).to.equal(body);
-			Lab.expect(a.previousSibling).to.equal(c);
-			Lab.expect(b.previousSibling).to.equal(a);
-			Lab.expect(a.nextSibling).to.equal(b);
-			Lab.expect(b.nextSibling).to.equal(null);
-
-			Lab.expect(body.removeChild(a)).to.equal(a);
-			Lab.expect(body.childNodes.length).to.equal(9);
-
-			Lab.expect(body.removeChild(b)).to.equal(b);
-			Lab.expect(body.childNodes.length).to.equal(8);
-
-			Lab.expect(body.removeChild(c)).to.equal(c);
-			Lab.expect(body.childNodes.length).to.equal(7);
-
-			done();
-		});
-
+	lab.test('getElementById', function(done){
 		new DOMDocument().loadXML('<root><item id="one">one</item><nest><nested id="one">one</nested></nest></root>', function(error, document){
 
 			//  the id 'one' occurs more than once in the document, it should return nothing at all (not even null)
 			Lab.expect(document.getElementById('one')).to.equal(undefined);
 			//  the id 'two' does not exist, it should return null
 			Lab.expect(document.getElementById('two')).to.equal(null);
-		});
 
+			done();
+		});
+	});
+
+	lab.test('normalizeDocument', function(done){
 		new DOMDocument().loadXML('<root>one<middle id="remove" />two</root>', function(error, document){
 			var remove = document.getElementById('remove');
 
@@ -233,157 +171,22 @@ lab.experiment('Document', function(){
 			document.normalizeDocument();
 			//  now, there can be only one.
 			Lab.expect(document.documentElement.childNodes.length).to.equal(1);
-		});
 
+			done();
+		});
+	});
+
+	lab.test('getElementsByTagName', function(done){
 		new DOMDocument().loadXML('<root><one /><two><one /></two></root>', function(error, document){
 			var two = document.getElementsByTagName('two');
 
 			Lab.expect(two.length).to.equal(1);
 			Lab.expect(document.getElementsByTagName('one').length).to.equal(2);
 			Lab.expect(two[0].getElementsByTagName('one').length).to.equal(1);
-		});
-	});
-
-
-	lab.test('Attribute', function(done){
-		var time = process.hrtime(),
-			lang, head, i;
-
-		new DOMDocument().load(__dirname + '/files/basic.xml', function(error, document){
-
-			//  lookups on the element.attributes property
-			Lab.expect(document.documentElement.attributes.length).to.equal(1);
-			lang = document.documentElement.attributes.item(0);
-			Lab.expect(lang.name).to.equal('lang');
-			Lab.expect(lang.value).to.equal('en');
-			Lab.expect(lang.ownerElement.nodeName).to.equal('html');
-
-			//  lookups on the element itself
-			Lab.expect(document.documentElement.getAttribute('lang')).to.equal('en');
-
-			//  removal (we cannot let mocha compare the result to lang, so we do it ourselves and see it it resolves to true)
-			Lab.expect(document.documentElement.attributes.removeNamedItem('lang') === lang).to.equal(true);
-			Lab.expect(document.documentElement.attributes.length).to.equal(0);
-
-			//  removing it again would result in null as it no longer exists
-			Lab.expect(document.documentElement.attributes.removeNamedItem('lang')).to.equal(null);
-
-			//  manipulating
-			document.documentElement.setAttribute('lang', 'nl');
-			Lab.expect(document.documentElement.attributes.length).to.equal(1);
-			Lab.expect(document.documentElement.getAttribute('lang')).to.equal('nl');
-
-			//  set it again (covers a slight variation of the underlying flow)
-			Lab.expect(document.documentElement.hasAttribute('lang')).to.equal(true);
-			document.documentElement.setAttribute('lang', 'en');
-			Lab.expect(document.documentElement.attributes.length).to.equal(1);
-			Lab.expect(document.documentElement.getAttribute('lang')).to.equal('en');
-
-			//  remove it
-			Lab.expect(document.documentElement.removeAttribute('lang')).to.equal(undefined);
-			Lab.expect(document.documentElement.attributes.length).to.equal(0);
-			Lab.expect(document.documentElement.getAttribute('lang')).to.equal(null);
-			Lab.expect(document.documentElement.hasAttribute('lang')).to.equal(false);
-
-			//  remove it again, no problem (+coverage)
-			Lab.expect(document.documentElement.removeAttribute('lang')).to.equal(undefined);
-			Lab.expect(document.documentElement.hasAttribute('lang')).to.equal(false);
-
-			for (i = 0; i < 10; ++i)
-			{
-				document.documentElement.setAttribute('test' + i, i);
-				Lab.expect(document.documentElement.attributes.length).to.equal(1 + i);
-				Lab.expect(document.documentElement.getAttribute('test' + i)).to.equal(i);
-			}
-
-			for (i = 10; i >= 0; --i)
-			{
-				document.documentElement.removeAttribute('test' + i);
-				Lab.expect(document.documentElement.attributes.length).to.equal(i);
-			}
-
-			document.documentElement.setAttribute('lang', 'nl');
-			lang = document.documentElement.attributes.item(0);
-			Lab.expect(document.documentElement.removeAttributeNode(lang) === lang).to.equal(true);
-			Lab.expect(document.documentElement.attributes.length).to.equal(0);
-
-
-			head = document.getElementsByTagName('head');
-			head[0].setAttributeNode(lang);
 
 			done();
 		});
 	});
 
-	lab.test('textContent', function(done){
-		new DOMDocument('1.0', 'utf-8').loadXML('<root>My Text<child>My Child</child></root>', function(error, document){
-			var root = document.documentElement,
-				content = 'My TextMy Child',
-				children = root.childNodes.length,
-				i;
-
-			//  initialization tests
-			Lab.expect(root.nodeName).to.equal('root');
-			Lab.expect(root.textContent).to.equal(content);
-
-			//  add nodes with content
-			for (i = 0; i < 10; ++i)
-			{
-				root.appendChild(document.createElement('added')).appendChild(document.createTextNode('Added #' + i));
-				content += 'Added #' + i;
-			}
-			Lab.expect(root.textContent).to.equal(content);
-			Lab.expect(root.childNodes.length).to.equal(children + 10);
-
-			content = 'empty';
-			root.textContent = content;
-			Lab.expect(root.textContent).to.equal(content);
-			Lab.expect(root.childNodes.length).to.equal(1);
-
-			done();
-		});
-	});
-
-	lab.test('wholeText', function(done){
-		var dom = new DOMDocument('1.0', 'utf-8'),
-			time = process.hrtime();
-
-		dom.loadXML('<root />', function(error, document){
-			var root = document.documentElement,
-				content = '',
-				i;
-
-			//  add nodes with content
-			for (i = 0; i < 10; ++i)
-			{
-				root.appendChild(document.createTextNode('Added #' + i));
-				content += 'Added #' + i;
-			}
-			Lab.expect(root.textContent).to.equal(content);
-			Lab.expect(root.childNodes.length).to.equal(10);
-
-			for (i = 0; i < root.childNodes.length; ++i)
-				Lab.expect(root.childNodes[i].wholeText).to.equal(content);
-
-			root.childNodes[4].replaceWholeText('trololo');
-			Lab.expect(root.childNodes.length).to.equal(1);
-			Lab.expect(root.textContent).to.equal('trololo');
-
-			done();
-		});
-
-		new DOMDocument().loadXML('<root><first />one<middle/>two<middle/>three<last /></root>', function(error, document){
-			var middle = document.getElementsByTagName('middle'),
-				i;
-
-			for (i = 0; i < middle.length; ++i)
-				middle[i].parentNode.removeChild(middel[i]);
-
-			Lab.expect(document.documentElement.childNodes.length).to.equal(5);
-			document.documentElement.childNodes[1].replaceWholeText('trololo');
-			Lab.expect(root.childNodes.length).to.equal(3);
-			Lab.expect(root.textContent).to.equal('trololo');
-		});
-	});
 
 });
