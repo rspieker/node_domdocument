@@ -6,11 +6,17 @@
   "license": "MIT",
   "keywords": [
     "dom",
-    "document"
+    "xml",
+    "expat",
+    "domdocument"
   ],
   "author": {
     "name": "Rogier Spieker",
-    "email": "spieker@gmail.com"
+    "email": "rogier+domdocument@konfirm.io"
+  },
+  "scripts": {
+    "test": "make test-report",
+    "posttest": "[ -e test-report.html ] && open test-report.html"
   },
   "repository": {
     "type": "git",
@@ -23,7 +29,7 @@
     "node": ">=0.8"
   },
   "dependencies": {
-    "node-expat": "~2.3.1"
+    "node-expat": "^2.3.1"
   },
   "main": "./lib/dom.js",
   "directories": {
