@@ -28,7 +28,6 @@ lab.experiment('Element', function(){
 				b = document.createElement('b'),
 				c, bcn, body;
 
-
 			Lab.expect(document.lastChild.nodeName).to.equal('html');
 
 			Lab.expect(strong.length).to.equal(1);
@@ -95,7 +94,6 @@ lab.experiment('Element', function(){
 				c = body.lastChild;
 				Lab.expect(body.removeChild(c)).to.equal(c);
 			}
-
 
 			done();
 		});
@@ -166,12 +164,12 @@ lab.experiment('Element', function(){
 				i;
 
 			for (i = 0; i < middle.length; ++i)
-				middle[i].parentNode.removeChild(middel[i]);
+				middle[i].parentNode.removeChild(middle[i]);
 
 			Lab.expect(document.documentElement.childNodes.length).to.equal(5);
 			document.documentElement.childNodes[1].replaceWholeText('trololo');
-			Lab.expect(root.childNodes.length).to.equal(3);
-			Lab.expect(root.textContent).to.equal('trololo');
+			Lab.expect(document.documentElement.childNodes.length).to.equal(3);
+			Lab.expect(document.documentElement.textContent).to.equal('trololo');
 		});
 	});
 
