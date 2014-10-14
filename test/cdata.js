@@ -21,6 +21,10 @@ lab.experiment('CDATASection', function(){
 			Lab.expect(cdata.ownerDocument).to.equal(document);
 			Lab.expect(cdata.length).to.equal(23);
 
+			Lab.expect(cdata.textContent).to.equal(cdata.data);
+			cdata.textContent = 'Changed';
+			Lab.expect(cdata.textContent).to.equal(cdata.data);
+
 			Lab.expect(cdata + '').to.equal('[object DOMCDATASection]');
 			done();
 		});

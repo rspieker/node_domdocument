@@ -7,7 +7,7 @@ var Lab = require('lab'),
 lab.experiment('Element', function(){
 
 	lab.test('Direct creation', function(done){
-		var element = new Element('element');
+		var element = new Element('nope');
 
 		Lab.expect(element.nodeType).to.equal(null);
 		Lab.expect(element.nodeName).to.equal(null);
@@ -28,6 +28,7 @@ lab.experiment('Element', function(){
 				b = document.createElement('b'),
 				c, bcn, body;
 
+
 			Lab.expect(document.lastChild.nodeName).to.equal('html');
 
 			Lab.expect(strong.length).to.equal(1);
@@ -42,6 +43,10 @@ lab.experiment('Element', function(){
 			body = strong[0].parentNode;
 			bcn  = body.childNodes;
 			Lab.expect(body.nodeName).to.equal('body');
+			Lab.expect(body.prefix).to.equal(null);
+			Lab.expect(body.localName).to.equal('body');
+			Lab.expect(body.baseURI).to.be.a('string');
+			Lab.expect(body.baseURI).to.match(/\w+\/\w+/);
 
 			Lab.expect(document.getElementById('findme')).to.equal(strong[0]);
 
@@ -82,6 +87,16 @@ lab.experiment('Element', function(){
 			Lab.expect(body.removeChild(c)).to.equal(c);
 			Lab.expect(body.childNodes.length).to.equal(7);
 
+			Lab.expect(body.firstChild.previousSibling).to.equal(null);
+			Lab.expect(body.lastChild.nextSibling).to.equal(null);
+
+			while (body.lastChild)
+			{
+				c = body.lastChild;
+				Lab.expect(body.removeChild(c)).to.equal(c);
+			}
+
+
 			done();
 		});
 
@@ -93,6 +108,8 @@ lab.experiment('Element', function(){
 				content = 'My TextMy Child',
 				children = root.childNodes.length,
 				i;
+
+			Lab.expect(document.textContent).to.equal(null);
 
 			//  initialization tests
 			Lab.expect(root.nodeName).to.equal('root');

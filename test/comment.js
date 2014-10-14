@@ -21,6 +21,10 @@ lab.experiment('Comment', function(){
 			Lab.expect(comment.ownerDocument).to.equal(document);
 			Lab.expect(comment.length).to.equal(17);
 
+			Lab.expect(comment.textContent).to.equal(comment.data);
+			comment.textContent = 'Changed';
+			Lab.expect(comment.textContent).to.equal(comment.data);
+
 			Lab.expect(comment + '').to.equal('[object DOMComment]');
 
 			done();
