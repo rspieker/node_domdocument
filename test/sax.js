@@ -6,15 +6,11 @@ var Lab = require('lab'),
 
 function stream(file, done, encoding)
 {
-	new SAXParser().stream(__dirname + '/files/' + file, function(error, document){
-		done(error, document);
-	}, encoding);
+	new SAXParser().stream(__dirname + '/files/' + file, done, encoding);
 }
 function parse(data, done, encoding)
 {
-	new SAXParser().parse(data, function(error, document){
-		done(error, document);
-	}, encoding);
+	new SAXParser().parse(data, done, encoding);
 }
 
 lab.experiment('SAX Parser', function(){
