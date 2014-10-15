@@ -36,6 +36,7 @@
     "lib": "./lib"
   },
   "devDependencies": {
-    "lab": "^4.6.2"
+    "lab": "^4.6.2",
+    "plato": "^1.2.0"
   }
 }

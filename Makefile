@@ -4,11 +4,18 @@ test:
 
 #  Run all tests and create a report in html
 test-report:
-	@./node_modules/.bin/lab -c -r html > test-report.html;
+	@mkdir -p report;
+	@./node_modules/.bin/lab -c -r html -o report/lab-report.html && echo "Lab Report generated in report/lab-report.html";
 
 #  Run all tests and show the coverage (target is always to cover 100%)
 test-coverage:
 	@./node_modules/.bin/lab -c;
+
+analysis:
+	@./node_modules/.bin/plato --dir report/plato --recurse lib/ && echo "Plato Report generated in report/plato";
+
+full-report:
+	@$(MAKE) analysis test-report;
 
 #  Run all tests and show the lint results (linting is not-configured and very tight)
 test-lint:
