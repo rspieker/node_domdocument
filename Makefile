@@ -1,6 +1,6 @@
 #  Run all tests
 test:
-	@./node_modules/.bin/lab
+	@./node_modules/.bin/lab;
 
 #  Run all tests and create a report in html
 test-report:
@@ -19,7 +19,7 @@ full-report:
 
 #  Run all tests and show the lint results (linting is not-configured and very tight)
 test-lint:
-	@./node_modules/.bin/lab -L;
+	@./node_modules/.bin/lab -L lib/;
 
 #  Check all sources for a 'todo' and display those
 todo:
