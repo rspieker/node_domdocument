@@ -220,6 +220,45 @@ lab.experiment('Node', function(){
 
 			done();
 		});
+
+		lab.test('isEqualNode', function(done){
+			var nodeA = a.createElement('equal'),
+				nodeB = a.createElement('equal'),
+				nodeC = a.createElement('notequal');
+
+			Lab.expect(nodeA.isEqualNode(nodeB)).to.equal(true);
+			Lab.expect(nodeB.isEqualNode(nodeA)).to.equal(true);
+
+			Lab.expect(nodeA.isEqualNode(nodeC)).to.equal(false);
+			Lab.expect(nodeB.isEqualNode(nodeC)).to.equal(false);
+
+			nodeA.setAttribute('differ', 'yes');
+			Lab.expect(nodeA.isEqualNode(nodeB)).to.equal(false);
+			nodeB.setAttribute('differ', 'yes');
+			Lab.expect(nodeA.isEqualNode(nodeB)).to.equal(true);
+
+			nodeA.appendChild(a.createElement('child'));
+			Lab.expect(nodeA.isEqualNode(nodeB)).to.equal(false);
+			nodeB.appendChild(a.createElement('child'));
+			Lab.expect(nodeA.isEqualNode(nodeB)).to.equal(true);
+
+			nodeA.removeAttribute('differ', 'yes');
+			Lab.expect(nodeA.isEqualNode(nodeB)).to.equal(false);
+			nodeB.removeAttribute('differ', 'yes');
+			Lab.expect(nodeA.isEqualNode(nodeB)).to.equal(true);
+
+			nodeA.appendChild(a.createElement('childA'));
+			Lab.expect(nodeA.isEqualNode(nodeB)).to.equal(false);
+			nodeB.appendChild(a.createElement('childB'));
+			Lab.expect(nodeA.isEqualNode(nodeB)).to.equal(false);
+
+			nodeA.appendChild(a.createElement('childB'));
+			Lab.expect(nodeA.isEqualNode(nodeB)).to.equal(false);
+			nodeB.insertBefore(a.createElement('childA'), nodeB.lastChild);
+			Lab.expect(nodeA.isEqualNode(nodeB)).to.equal(true);
+
+			done();
+		});
 	}
 
 	function callback(error, document)
