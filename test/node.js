@@ -247,6 +247,16 @@ lab.experiment('Node', function(){
 			nodeB.removeAttribute('differ', 'yes');
 			Lab.expect(nodeA.isEqualNode(nodeB)).to.equal(true);
 
+			nodeA.appendChild(a.createElement('childA'));
+			Lab.expect(nodeA.isEqualNode(nodeB)).to.equal(false);
+			nodeB.appendChild(a.createElement('childB'));
+			Lab.expect(nodeA.isEqualNode(nodeB)).to.equal(false);
+
+			nodeA.appendChild(a.createElement('childB'));
+			Lab.expect(nodeA.isEqualNode(nodeB)).to.equal(false);
+			nodeB.insertBefore(a.createElement('childA'), nodeB.lastChild);
+			Lab.expect(nodeA.isEqualNode(nodeB)).to.equal(true);
+
 			done();
 		});
 	}
