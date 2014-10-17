@@ -102,7 +102,11 @@ lab.experiment('Helper', function(){
 				lockedKey: {key: 'test', locked: true},
 				lockedValue: {value: 'test', locked: true},
 				lockedUnknown: {locked: true, key: 'do not define'},
-				magic: {},
+				magic: {
+					get: function(){
+						return 'magical';
+					}
+				},
 				setter: {
 					set: true,
 					key: 'test2'
@@ -111,9 +115,6 @@ lab.experiment('Helper', function(){
 					set: true
 				}
 			};
-		};
-		Deco.prototype.___get_magic = function(){
-			return 'magical';
 		};
 
 
@@ -126,10 +127,7 @@ lab.experiment('Helper', function(){
 		Lab.expect(deco.lockedValue).to.equal('test');
 		Lab.expect(deco.lockedUnknown).to.equal(null);
 
-		//  removal should trigger the internal getter flow which has nothing to execute or lookup and must trigger null
 		Lab.expect(deco.magic).to.equal('magical');
-		deco.___get_magic = false;
-		Lab.expect(deco.magic).to.equal(null);
 
 		deco.setter = 'x'
 		Lab.expect(deco.setter).to.equal('x');
