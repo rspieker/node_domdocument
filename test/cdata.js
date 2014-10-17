@@ -22,8 +22,16 @@ lab.experiment('CDATASection', function(){
 			Lab.expect(cdata.length).to.equal(23);
 
 			Lab.expect(cdata.textContent).to.equal(cdata.data);
+
 			cdata.textContent = 'Changed';
+			Lab.expect(cdata.textContent).to.equal('Changed');
 			Lab.expect(cdata.textContent).to.equal(cdata.data);
+			Lab.expect(cdata.nodeValue).to.equal(cdata.data);
+
+			cdata.nodeValue = 'changed, once more';
+			Lab.expect(cdata.textContent).to.equal('changed, once more');
+			Lab.expect(cdata.textContent).to.equal(cdata.data);
+			Lab.expect(cdata.nodeValue).to.equal(cdata.data);
 
 			Lab.expect(cdata + '').to.equal('[object DOMCDATASection]');
 			done();
