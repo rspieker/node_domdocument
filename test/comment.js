@@ -22,8 +22,16 @@ lab.experiment('Comment', function(){
 			Lab.expect(comment.length).to.equal(17);
 
 			Lab.expect(comment.textContent).to.equal(comment.data);
+
 			comment.textContent = 'Changed';
+			Lab.expect(comment.textContent).to.equal('Changed');
 			Lab.expect(comment.textContent).to.equal(comment.data);
+			Lab.expect(comment.nodeValue).to.equal(comment.data);
+
+			comment.nodeValue = 'changed, once more';
+			Lab.expect(comment.textContent).to.equal('changed, once more');
+			Lab.expect(comment.textContent).to.equal(comment.data);
+			Lab.expect(comment.nodeValue).to.equal(comment.data);
 
 			Lab.expect(comment + '').to.equal('[object DOMComment]');
 
