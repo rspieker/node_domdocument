@@ -89,6 +89,16 @@ lab.experiment('SimpleFactory', function(){
 				preserveComment: true
 			})).to.equal('<node>foo<!--baz-->bar</node>');
 
+			simple.append(factory.create(3, '#text', '<'));
+			Lab.expect(simple.serialize({
+				preserveComment: true
+			})).to.equal('<node>foo<!--baz-->bar&lt;</node>');
+
+
+			simple = factory.create(1, 'pre', {special:'é'});
+
+			Lab.expect(simple.serialize({})).to.equal('<pre special="é"></pre>');
+
 			done();
 		});
 

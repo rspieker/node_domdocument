@@ -20,7 +20,7 @@ lab.experiment('Node', function(){
 	});
 
 	var dom = [],
-		xml = '<root><item><nested /></item><item><nested /></item></root>',
+		xml = '<root><item><nested /></item><item><nested><![CDATA[inside nested]]></nested></item><!--next--></root>',
 		i;
 
 
@@ -122,7 +122,7 @@ lab.experiment('Node', function(){
 
 			Lab.expect(clone.nodeType).to.equal(a.documentElement.nodeType);
 			Lab.expect(clone.nodeName).to.equal(a.documentElement.nodeName);
-			Lab.expect(clone.childNodes.length).to.equal(2);
+			Lab.expect(clone.childNodes.length).to.equal(3);
 			Lab.expect(clone.firstChild.nodeName).to.equal(a.documentElement.firstChild.nodeName);
 			Lab.expect(clone.lastChild.nodeName).to.equal(a.documentElement.lastChild.nodeName);
 
@@ -218,6 +218,26 @@ lab.experiment('Node', function(){
 				offset.nextSibling.firstChild.compareDocumentPosition(offset) & Node.DOCUMENT_POSITION_PRECEDING
 			).to.equal(Node.DOCUMENT_POSITION_PRECEDING);
 
+			Lab.expect(
+				b.documentElement.lastChild.compareDocumentPosition(offset.firstChild) & Node.DOCUMENT_POSITION_PRECEDING
+			).to.equal(Node.DOCUMENT_POSITION_PRECEDING);
+			Lab.expect(
+				offset.firstChild.compareDocumentPosition(b.documentElement.lastChild) & Node.DOCUMENT_POSITION_FOLLOWING
+			).to.equal(Node.DOCUMENT_POSITION_FOLLOWING);
+
+
+			//  comparing different node types
+
+			//  descended sibling preceding
+			Lab.expect(
+				offset.compareDocumentPosition(offset.nextSibling.firstChild.firstChild) & Node.DOCUMENT_POSITION_FOLLOWING
+			).to.equal(Node.DOCUMENT_POSITION_FOLLOWING);
+
+			//  descended sibling following
+			Lab.expect(
+				offset.nextSibling.firstChild.firstChild.compareDocumentPosition(offset) & Node.DOCUMENT_POSITION_PRECEDING
+			).to.equal(Node.DOCUMENT_POSITION_PRECEDING);
+
 			done();
 		});
 
@@ -256,6 +276,8 @@ lab.experiment('Node', function(){
 			Lab.expect(nodeA.isEqualNode(nodeB)).to.equal(false);
 			nodeB.insertBefore(a.createElement('childA'), nodeB.lastChild);
 			Lab.expect(nodeA.isEqualNode(nodeB)).to.equal(true);
+
+			Lab.expect(a.isEqualNode(a)).to.equal(true);
 
 			done();
 		});

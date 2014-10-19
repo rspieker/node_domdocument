@@ -101,7 +101,7 @@ lab.experiment('Element', function(){
 	});
 
 	lab.test('textContent', function(done){
-		new DOMDocument('1.0', 'utf-8').loadXML('<root>My Text<child>My Child</child></root>', function(error, document){
+		new DOMDocument('1.0', 'utf-8').loadXML('<root>My Text<child><![CDATA[My Child]]></child></root>', function(error, document){
 			var root = document.documentElement,
 				content = 'My TextMy Child',
 				children = root.childNodes.length,

@@ -188,5 +188,14 @@ lab.experiment('Document', function(){
 		});
 	});
 
+	lab.test('unsupported createEntityReference', function(done){
+		new DOMDocument().loadXML('<root />', function(error, document){
+			Lab.expect(function(){
+				document.createEntityReference('amp');
+			}).to.throw('NOT_SUPPORTED_ERR');
+
+			done();
+		});
+	});
 
 });
