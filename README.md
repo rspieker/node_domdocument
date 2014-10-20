@@ -74,7 +74,7 @@ And that's not even it, we also lack full support of the following methods and p
 - [ ] Node.setUserData
 - [ ] Node.getUserData
 - [ ] Text.isElementContentWhitespace
-- [ ] Text.splitText
+- [x] Text.splitText
 
 
 ##Roadmap

@@ -173,4 +173,27 @@ lab.experiment('Element', function(){
 		});
 	});
 
+	lab.test('splitText', function(done){
+		new DOMDocument().loadXML('<root>This is a text</root>', function(error, document){
+
+			var root = document.documentElement,
+				text = root.firstChild,
+				remain;
+
+			Lab.expect(root.childNodes.length).to.equal(1);
+			Lab.expect(text.nodeType).to.equal(3);
+			Lab.expect(text.nodeValue).to.equal('This is a text');
+
+			remain = text.splitText(6);
+			Lab.expect(text.nodeValue.length).to.equal(6);
+			Lab.expect(text.nextSibling).to.equal(remain);
+			Lab.expect(root.childNodes.length).to.equal(2);
+
+			Lab.expect(text.nodeValue).to.equal('This i');
+			Lab.expect(remain.nodeValue).to.equal('s a text');
+
+			done();
+		});
+	});
+
 });
