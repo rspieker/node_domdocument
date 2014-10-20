@@ -52,10 +52,10 @@ Being one of the tougher requirements of a fully capable DOM implementation, nam
 - [ ] Element.setAttributeNS
 - [ ] Element.setIdAttributeNS
 - [ ] NamedNodeMap.getNamedItemNS
-- [ ] Node.isDefaultNamespace
-- [ ] Node.localName
-- [ ] Node.lookupPrefix
-- [ ] Node.prefix
+- [x] Node.isDefaultNamespace
+- [x] Node.localName
+- [x] Node.lookupPrefix
+- [x] Node.prefix
 
 ###ID attributes
 In order to maintain steady progress on the implementation of DOMDocument, I have ignored the part of the specification where the DOM lets you specify which attribute is the id attribute, I went for the most common usage (which is the HTML DOM), where the id attribute is literally the attribute whose name is 'id', this means the following methods and properties will not yet behave fully DOM compatible
