@@ -64,6 +64,11 @@ lab.experiment('Namespace', function(){
 			Lab.expect(element.attributes.item(0).name).to.equal('xmlns:lab');
 			Lab.expect(element.attributes.item(0).value).to.equal('/lab');
 
+			Lab.expect(document.documentElement.appendChild(element)).to.equal(element);
+
+			element = new XMLSerializer().serializeToString(document);
+			Lab.expect(element).to.equal('<root><lab:node xmlns:lab="/lab"></lab:node></root>');
+
 			done();
 		});
 	});
