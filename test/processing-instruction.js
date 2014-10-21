@@ -32,19 +32,13 @@ lab.experiment('Processing Instruction', function(){
 			//  attachment
 
 			document.appendChild(pi);
-			Lab.expect(new XMLSerializer().serializeToString(document)).to.equal('<root></root><?xml-stylesheet href="mycss.css" type="text/css"?>');
+			Lab.expect(new XMLSerializer().serializeToString(document)).to.equal('<root/><?xml-stylesheet href="mycss.css" type="text/css"?>');
 
 			document.insertBefore(pi, document.documentElement);
-			Lab.expect(new XMLSerializer().serializeToString(document)).to.equal('<?xml-stylesheet href="mycss.css" type="text/css"?><root></root>');
+			Lab.expect(new XMLSerializer().serializeToString(document)).to.equal('<?xml-stylesheet href="mycss.css" type="text/css"?><root/>');
 
 			done();
 		});
 	});
-
-/*
-If target does not match the Name production an "InvalidCharacterError" exception will be thrown.
-
-If data contains "?>" an "InvalidCharacterError" exception will be thrown.
-*/
 
 });

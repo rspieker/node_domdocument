@@ -97,7 +97,7 @@ lab.experiment('SimpleFactory', function(){
 
 			simple = factory.create(1, 'pre', {special:'é'});
 
-			Lab.expect(simple.serialize({})).to.equal('<pre special="é"></pre>');
+			Lab.expect(simple.serialize({format:'html'})).to.equal('<pre special=é></pre>');
 
 			done();
 		});

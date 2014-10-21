@@ -43,13 +43,13 @@ Being one of the tougher requirements of a fully capable DOM implementation, nam
 - [x] Document.createElementNS
 - [ ] Document.getElementsByTagNameNS
 - [ ] Element.getAttributeNodeNS
-- [ ] Element.getAttributeNS
+- [x] Element.getAttributeNS
 - [ ] Element.getElementsByTagNameNS
 - [ ] Element.hasAttributeNS
 - [ ] Element.removeAttributeNodeNS
 - [ ] Element.removeAttributeNS
 - [ ] Element.setAttributeNodeNS
-- [ ] Element.setAttributeNS
+- [x] Element.setAttributeNS
 - [ ] Element.setIdAttributeNS
 - [ ] NamedNodeMap.getNamedItemNS
 - [x] Node.isDefaultNamespace
