@@ -12,10 +12,8 @@ lab.experiment('Namespace', function(){
 			'</lab:root>';
 
 
-	new DOMDocument().loadXML('<root xmlns="/spul" />', function(error, document){
-
-		lab.test('parsing default namespaces', function(done){
-
+	lab.test('parse single default namespace', function(done){
+		new DOMDocument().loadXML('<root xmlns="/spul" />', function(error, document){
 			//  Node.isDefaultNamespace(...);
 			Lab.expect(document.documentElement.isDefaultNamespace('/nope')).to.equal(false);
 			Lab.expect(document.documentElement.isDefaultNamespace('/spul')).to.equal(true);
@@ -25,9 +23,8 @@ lab.experiment('Namespace', function(){
 
 	});
 
-	new DOMDocument().loadXML(xml, function(error, document){
-
-		lab.test('properties', function(done){
+	lab.test('parse multiple default and prefixed namespaces', function(done){
+		new DOMDocument().loadXML(xml, function(error, document){
 			var root = document.documentElement;
 
 			//  Node.prefix, Node.localName, Node.nodeName
@@ -50,22 +47,24 @@ lab.experiment('Namespace', function(){
 			Lab.expect(root.lookupPrefix('/spul')).to.equal(null);
 			Lab.expect(root.lookupPrefix('/default')).to.equal(null);
 
-/*
-			console.log(new XMLSerializer().serializeToString(document));
-
-			console.log(document.documentElement.firstChild.___simple(function(){
-				return this.ns();
-			}));
-			console.log(document.documentElement.firstChild.firstChild.___simple(function(){
-				return this.ns();
-			}));
-			console.log(document.documentElement.firstChild.nextSibling.___simple(function(){
-				return this.ns();
-			}));
-*/
-
 			done();
 		});
 	});
 
+	lab.test('creating new elements and attributes', function(done){
+		new DOMDocument().loadXML('<root />', function(error, document){
+			var element;
+
+			element = document.createElementNS('/lab', 'lab:node');
+			Lab.expect(element.nodeType).to.equal(1);
+			Lab.expect(element.prefix).to.equal('lab');
+			Lab.expect(element.localName).to.equal('node');
+			Lab.expect(element.nodeName).to.equal('lab:node');
+			Lab.expect(element.attributes.length).to.equal(1);
+			Lab.expect(element.attributes.item(0).name).to.equal('xmlns:lab');
+			Lab.expect(element.attributes.item(0).value).to.equal('/lab');
+
+			done();
+		});
+	});
 });

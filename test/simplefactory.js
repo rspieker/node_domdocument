@@ -54,7 +54,7 @@ lab.experiment('SimpleFactory', function(){
 			Lab.expect(simple.type).to.equal(9);
 			Lab.expect(simple.name).to.equal('#document');
 			Lab.expect(simple.data).to.equal('uri');
-			Lab.expect(simple.prop.uri).to.equal('uri');
+			Lab.expect(simple.uri).to.equal('uri');
 
 			done();
 		});
