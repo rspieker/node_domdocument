@@ -40,7 +40,7 @@ At the moment I'm working on the unit tests and getting the code coverage to 100
 ###Namespaces
 Being one of the tougher requirements of a fully capable DOM implementation, namespaces are lacking entirely from this implementation.
 - [ ] Document.createAttributeNS
-- [ ] Document.createElementNS
+- [x] Document.createElementNS
 - [ ] Document.getElementsByTagNameNS
 - [ ] Element.getAttributeNodeNS
 - [ ] Element.getAttributeNS
