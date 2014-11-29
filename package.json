@@ -1,7 +1,7 @@
 {
   "name": "domdocument",
   "description": "Full DOM level 3 implementation",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "homepage": "https://github.com/rspieker/node_domdocument",
   "license": "MIT",
   "keywords": [
