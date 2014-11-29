@@ -29,14 +29,15 @@
     "node": ">=0.8"
   },
   "dependencies": {
-    "node-expat": "^2.3.1"
+    "htmlparser2": "^3.8.2"
   },
   "main": "./lib/dom.js",
   "directories": {
     "lib": "./lib"
   },
   "devDependencies": {
-    "lab": "^4.6.2",
+    "code": "^1.2.1",
+    "lab": "^5.1.0",
     "plato": "^1.2.0"
   }
 }

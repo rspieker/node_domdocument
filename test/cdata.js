@@ -1,4 +1,5 @@
-var Lab = require('lab'),
+var Code = require('code'),
+	Lab = require('lab'),
 	lab = exports.lab = Lab.script(),
 	DOMDocument = require('./../lib/dom.js'),
 	DOMException = require('./../lib/dom/exception.js');
@@ -13,27 +14,27 @@ lab.experiment('CDATASection', function(){
 				cdata = document.createCDATASection(body);
 
 			//  creation
-			Lab.expect(cdata.nodeType).to.equal(4);
-			Lab.expect(cdata.nodeName).to.equal('#cdata-section');
-			Lab.expect(cdata.nodeValue).to.equal(cdata.data);
-			Lab.expect(cdata.nodeValue).to.equal(body);
-			Lab.expect(cdata.parentNode).to.equal(null);
-			Lab.expect(cdata.ownerDocument).to.equal(document);
-			Lab.expect(cdata.length).to.equal(23);
+			Code.expect(cdata.nodeType).to.equal(4);
+			Code.expect(cdata.nodeName).to.equal('#cdata-section');
+			Code.expect(cdata.nodeValue).to.equal(cdata.data);
+			Code.expect(cdata.nodeValue).to.equal(body);
+			Code.expect(cdata.parentNode).to.equal(null);
+			Code.expect(cdata.ownerDocument).to.equal(document);
+			Code.expect(cdata.length).to.equal(23);
 
-			Lab.expect(cdata.textContent).to.equal(cdata.data);
+			Code.expect(cdata.textContent).to.equal(cdata.data);
 
 			cdata.textContent = 'Changed';
-			Lab.expect(cdata.textContent).to.equal('Changed');
-			Lab.expect(cdata.textContent).to.equal(cdata.data);
-			Lab.expect(cdata.nodeValue).to.equal(cdata.data);
+			Code.expect(cdata.textContent).to.equal('Changed');
+			Code.expect(cdata.textContent).to.equal(cdata.data);
+			Code.expect(cdata.nodeValue).to.equal(cdata.data);
 
 			cdata.nodeValue = 'changed, once more';
-			Lab.expect(cdata.textContent).to.equal('changed, once more');
-			Lab.expect(cdata.textContent).to.equal(cdata.data);
-			Lab.expect(cdata.nodeValue).to.equal(cdata.data);
+			Code.expect(cdata.textContent).to.equal('changed, once more');
+			Code.expect(cdata.textContent).to.equal(cdata.data);
+			Code.expect(cdata.nodeValue).to.equal(cdata.data);
 
-			Lab.expect(cdata + '').to.equal('[object DOMCDATASection]');
+			Code.expect(cdata + '').to.equal('[object DOMCDATASection]');
 			done();
 		});
 	});
@@ -47,17 +48,17 @@ lab.experiment('CDATASection', function(){
 
 				//  manipulate contents
 				cdata.replaceData(10, 0, 'successful ');
-				Lab.expect(cdata.length).to.equal(34);
-				Lab.expect(cdata.nodeValue).to.equal(cdata.data);
-				Lab.expect(cdata.nodeValue).to.equal('This is a successful cdata-section');
+				Code.expect(cdata.length).to.equal(34);
+				Code.expect(cdata.nodeValue).to.equal(cdata.data);
+				Code.expect(cdata.nodeValue).to.equal('This is a successful cdata-section');
 
 				cdata.replaceData(10, 7, 'wonder');
-				Lab.expect(cdata.length).to.equal(33);
-				Lab.expect(cdata.nodeValue).to.equal(cdata.data);
-				Lab.expect(cdata.nodeValue).to.equal('This is a wonderful cdata-section');
+				Code.expect(cdata.length).to.equal(33);
+				Code.expect(cdata.nodeValue).to.equal(cdata.data);
+				Code.expect(cdata.nodeValue).to.equal('This is a wonderful cdata-section');
 
 				//  exceeding the boundaries of manipulation
-				Lab.expect(function(){
+				Code.expect(function(){
 					cdata.replaceData(80, 0, 'exception..');
 				}).to.throw(DOMException, 'INDEX_SIZE_ERR');
 
@@ -72,12 +73,12 @@ lab.experiment('CDATASection', function(){
 
 				//  manipulate contents
 				cdata.insertData(10, 'most ');
-				Lab.expect(cdata.length).to.equal(39);
-				Lab.expect(cdata.nodeValue).to.equal(cdata.data);
-				Lab.expect(cdata.nodeValue).to.equal('This is a most successful cdata-section');
+				Code.expect(cdata.length).to.equal(39);
+				Code.expect(cdata.nodeValue).to.equal(cdata.data);
+				Code.expect(cdata.nodeValue).to.equal('This is a most successful cdata-section');
 
 				//  exceeding the boundaries of manipulation
-				Lab.expect(function(){
+				Code.expect(function(){
 					cdata.insertData(-1, 'exception...');
 				}).to.throw(DOMException, 'INDEX_SIZE_ERR');
 
@@ -92,12 +93,12 @@ lab.experiment('CDATASection', function(){
 
 				//  manipulate contents
 				cdata.deleteData(10, 15);
-				Lab.expect(cdata.length).to.equal(23);
-				Lab.expect(cdata.nodeValue).to.equal(cdata.data);
-				Lab.expect(cdata.nodeValue).to.equal('This is a cdata-section');
+				Code.expect(cdata.length).to.equal(23);
+				Code.expect(cdata.nodeValue).to.equal(cdata.data);
+				Code.expect(cdata.nodeValue).to.equal('This is a cdata-section');
 
 				//  exceeding the boundaries of manipulation
-				Lab.expect(function(){
+				Code.expect(function(){
 					cdata.deleteData(-1, 100);
 				}).to.throw(DOMException, 'INDEX_SIZE_ERR');
 
@@ -114,16 +115,16 @@ lab.experiment('CDATASection', function(){
 				cdata = document.createCDATASection(body);
 
 			//  newly create cdatas do not have a parentNode, but do belong to the document
-			Lab.expect(cdata.parentNode).to.equal(null);
-			Lab.expect(cdata.ownerDocument).to.equal(document);
+			Code.expect(cdata.parentNode).to.equal(null);
+			Code.expect(cdata.ownerDocument).to.equal(document);
 
 			//  appending the cdata to an element will change its parent
-			Lab.expect(document.documentElement.appendChild(cdata)).to.equal(cdata);
-			Lab.expect(cdata.parentNode).to.equal(document.documentElement);
+			Code.expect(document.documentElement.appendChild(cdata)).to.equal(cdata);
+			Code.expect(cdata.parentNode).to.equal(document.documentElement);
 
 			//  as does removing it from the parent
-			Lab.expect(document.documentElement.removeChild(cdata)).to.equal(cdata);
-			Lab.expect(cdata.parentNode).to.equal(null);
+			Code.expect(document.documentElement.removeChild(cdata)).to.equal(cdata);
+			Code.expect(cdata.parentNode).to.equal(null);
 
 			done();
 		});
