@@ -1,0 +1,127 @@
+var Code = require('code'),
+	Lab = require('lab'),
+	lab = exports.lab = Lab.script(),
+	DOMDocument = require('./../lib/dom.js'),
+	DOMException = require('./../lib/dom/exception.js'),
+	XMLSerializer = require('./../lib/xmlserializer.js');
+
+lab.experiment('Namespace', function(){
+	var xml = '<?xml version="1.0" encoding="utf-8"?>\n' +
+			'<lab:root xmlns="/spul" xmlns:lab="/lab">' +
+			'<lab:test xmlns="/default" spul="spulleke"><spul /></lab:test>' +
+			'<spul />' +
+			'</lab:root>';
+
+
+	lab.test('parse single default namespace', function(done){
+		new DOMDocument().loadXML('<root xmlns="/spul" />', function(error, document){
+			//  Node.isDefaultNamespace(...);
+			Code.expect(document.documentElement.isDefaultNamespace('/nope')).to.equal(false);
+			Code.expect(document.documentElement.isDefaultNamespace('/spul')).to.equal(true);
+
+			done();
+		});
+
+	});
+
+	lab.test('parse multiple default and prefixed namespaces', function(done){
+		new DOMDocument().loadXML(xml, function(error, document){
+			var root = document.documentElement;
+
+			//  Node.prefix, Node.localName, Node.nodeName
+			Code.expect(root.nodeType).to.equal(1);
+			Code.expect(root.prefix).to.equal('lab');
+			Code.expect(root.localName).to.equal('root');
+			Code.expect(root.nodeName).to.equal('lab:root');
+
+			//  Node.isDefaultNamespace(...);
+			Code.expect(root.isDefaultNamespace('/lab')).to.equal(false);
+			Code.expect(root.isDefaultNamespace('/spul')).to.equal(true);
+			Code.expect(root.isDefaultNamespace('/default')).to.equal(false);
+
+			Code.expect(root.firstChild.isDefaultNamespace('/lab')).to.equal(false);
+			Code.expect(root.firstChild.isDefaultNamespace('/spul')).to.equal(false);
+			Code.expect(root.firstChild.isDefaultNamespace('/default')).to.equal(true);
+
+			//  Node.lookupPrefix
+			Code.expect(root.lookupPrefix('/lab')).to.equal('lab');
+			Code.expect(root.lookupPrefix('/spul')).to.equal(null);
+			Code.expect(root.lookupPrefix('/default')).to.equal(null);
+
+			done();
+		});
+	});
+
+	lab.test('creating new elements and attributes', function(done){
+		new DOMDocument().loadXML('<root />', function(error, document){
+			var element;
+
+			//  if namespaceURI is null, there may be no prefix present in the qualifiedName
+			Code.expect(function(){
+				document.createElementNS(null, 'foo:bar');
+			}).to.throw('NAMESPACE_ERR');
+			//  if a namespaceURI is given we must have a qualifiedName consisting of both a prefix and localName
+			Code.expect(function(){
+				document.createElementNS('/new', 'foo');
+			}).to.throw('NAMESPACE_ERR');
+			//  if the prefix is 'xml', the namespaceURL must be http://www.w3.org/XML/1998/namespace
+			Code.expect(function(){
+				document.createElementNS('/new', 'xml:foo');
+			}).to.throw('NAMESPACE_ERR');
+			//  if the qualified name is 'xmlns', the namespace must be http://www.w3.org/2000/xmlns/
+			Code.expect(function(){
+				document.createElementNS('/new', 'xmlns');
+			}).to.throw('NAMESPACE_ERR');
+
+			element = document.createElementNS(null, 'node');
+			Code.expect(element.nodeType).to.equal(1);
+			Code.expect(element.prefix).to.equal(null);
+			Code.expect(element.localName).to.equal('node');
+			Code.expect(element.nodeName).to.equal('node');
+			Code.expect(element.attributes.length).to.equal(0);
+			Code.expect(document.documentElement.appendChild(element)).to.equal(element);
+
+			element = document.createElementNS('/lab', 'lab:node');
+			Code.expect(element.nodeType).to.equal(1);
+			Code.expect(element.prefix).to.equal('lab');
+			Code.expect(element.localName).to.equal('node');
+			Code.expect(element.nodeName).to.equal('lab:node');
+			Code.expect(element.attributes.length).to.equal(1);
+			Code.expect(element.attributes.item(0).name).to.equal('xmlns:lab');
+			Code.expect(element.attributes.item(0).value).to.equal('/lab');
+			Code.expect(document.documentElement.appendChild(element)).to.equal(element);
+
+			//  if namespaceURI is null, there may be no prefix present in the qualifiedName
+			Code.expect(function(){
+				element.setAttributeNS(null, 'foo:bar', 'baz');
+			}).to.throw('NAMESPACE_ERR');
+			//  if a namespaceURI is given we must have a qualifiedName consisting of both a prefix and localName
+			Code.expect(function(){
+				element.setAttributeNS('/new', 'foo', 'baz');
+			}).to.throw('NAMESPACE_ERR');
+			//  if the prefix is 'xml', the namespaceURL must be http://www.w3.org/XML/1998/namespace
+			Code.expect(function(){
+				element.setAttributeNS('/new', 'xml:foo', 'baz');
+			}).to.throw('NAMESPACE_ERR');
+			//  if the qualified name is 'xmlns', the namespace must be http://www.w3.org/2000/xmlns/
+			Code.expect(function(){
+				element.setAttributeNS('/new', 'xmlns', '/foo');
+			}).to.throw('NAMESPACE_ERR');
+
+
+			//  and now for the proper scenario's
+			element.setAttributeNS(null, 'a', 'b');
+			element.setAttributeNS('/c', 'd:e', 'f');
+			element.setAttributeNS('http://www.w3.org/XML/1998/namespace', 'xml:g', 'h');
+			element.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns', '/mine');
+
+//			Code.expect(element.getAttributeNS(null, 'a')).to.equal('b');
+			Code.expect(element.getAttributeNS('/c', 'e')).to.equal('f');
+
+			element = new XMLSerializer().serializeToString(document);
+			Code.expect(element).to.equal('<root><node/><lab:node xmlns:lab="/lab" a="b" xmlns:d="/c" d:e="f" xmlns:xml="http://www.w3.org/XML/1998/namespace" xml:g="h" xmlns="/mine"/></root>');
+
+			done();
+		});
+	});
+});
