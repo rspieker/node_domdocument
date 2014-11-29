@@ -75,6 +75,8 @@ And that's not even it, we also lack full support of the following methods and p
 - [ ] Node.getUserData
 - [ ] Text.isElementContentWhitespace
 - [x] Text.splitText
+- [x] Document.doctype
+- [ ] Document.implementation
 
 
 ##Roadmap
