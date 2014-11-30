@@ -52,6 +52,17 @@ lab.experiment('XMLSerializer', function(){
 
 	});
 
+	lab.test('Entities', function(done){
+		new DOMDocument().loadXML('<ent>&</ent>', function(error, document){
+
+			Code.expect(serialize(document)).to.equal('<ent>&amp;</ent>');
+			Code.expect(serialize(document, {entity: {}})).to.equal('<ent>&#38;</ent>');
+			Code.expect(serialize(document, {entity: {'&': '&awesome;'}})).to.equal('<ent>&awesome;</ent>');
+
+			done();
+		});
+	});
+
 	lab.test('Comment', function(done){
 		new DOMDocument().loadXML('<!--comment-->', function(error, document){
 
