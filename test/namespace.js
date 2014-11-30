@@ -12,7 +12,6 @@ lab.experiment('Namespace', function(){
 			'<spul />' +
 			'</lab:root>';
 
-
 	lab.test('parse single default namespace', function(done){
 		new DOMDocument().loadXML('<root xmlns="/spul" />', function(error, document){
 			//  Node.isDefaultNamespace(...);
@@ -23,35 +22,20 @@ lab.experiment('Namespace', function(){
 		});
 	});
 
-/*
 	lab.test('attributes (namespaced and non-namespaced)', function(done){
 		new DOMDocument().loadXML('<root xmlns="/spul" xmlns:foo="/foo"><child foo="bar" foo:bar="baz" /></root>', function(error, document){
 			var child = document.getElementsByTagName('child')[0];
 
-// console.log(
-// 	child.___simple(function(){return this;}), child.nodeName, child.nodeType
-// );
-console.log(
-	'/foo', 'bar',
-	child.getAttributeNS('/foo', 'bar')
-);
-console.log(
-	'/foo', 'foo',
-	child.getAttributeNS('/foo', 'foo')
-);
-console.log(
-	'foo',
-	child.getAttribute('foo')
-);
-
+			Code.expect(child.getAttributeNS('/does/not/exist', 'bar') || '').to.equal('');
 			Code.expect(child.getAttributeNS('/foo', 'bar')).to.equal('baz');
-			Code.expect(child.getAttributeNS('/foo', 'foo')).to.equal('');
+			Code.expect(child.getAttributeNS('/foo', 'foo') || '').to.equal('');
+			Code.expect(child.getAttributeNS('', 'foo')).to.equal('bar');
 			Code.expect(child.getAttribute('foo')).to.equal('bar');
 
 			done();
 		});
 	});
-*/
+
 	lab.test('parse multiple default and prefixed namespaces', function(done){
 		new DOMDocument().loadXML(xml, function(error, document){
 			var root = document.documentElement;
@@ -140,16 +124,19 @@ console.log(
 			//  and now for the proper scenario's
 			element.setAttributeNS(null, 'a', 'b');
 			element.setAttributeNS('/c', 'd:e', 'f');
+			element.setAttributeNS('/c', 'd:g', 'h');
 			element.setAttributeNS('http://www.w3.org/XML/1998/namespace', 'xml:g', 'h');
 			element.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns', '/mine');
 
-//			Code.expect(element.getAttributeNS(null, 'a')).to.equal('b');
+			Code.expect(element.getAttributeNS(null, 'a')).to.equal('b');
 			Code.expect(element.getAttributeNS('/c', 'e')).to.equal('f');
+			Code.expect(element.getAttributeNS('/c', 'g')).to.equal('h');
 
 			element = new XMLSerializer().serializeToString(document);
-			Code.expect(element).to.equal('<root><node/><lab:node xmlns:lab="/lab" a="b" xmlns:d="/c" d:e="f" xmlns:xml="http://www.w3.org/XML/1998/namespace" xml:g="h" xmlns="/mine"/></root>');
+			Code.expect(element).to.equal('<root><node/><lab:node xmlns:lab="/lab" a="b" xmlns:d="/c" d:e="f" d:g="h" xmlns:xml="http://www.w3.org/XML/1998/namespace" xml:g="h" xmlns="/mine"/></root>');
 
 			done();
 		});
 	});
+
 });
