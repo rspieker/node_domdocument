@@ -36,10 +36,19 @@ lab.experiment('Namespace', function(){
 		new DOMDocument().loadXML('<root xmlns="/spul" xmlns:foo="/foo"><child foo="bar" foo:bar="baz" /></root>', function(error, document){
 			var child = document.getElementsByTagName('child')[0];
 
+			Code.expect(child.hasAttributeNS('/does/not/exist', 'bar')).to.equal(false);
 			Code.expect(child.getAttributeNS('/does/not/exist', 'bar') || '').to.equal('');
+
+			Code.expect(child.hasAttributeNS('/foo', 'bar')).to.equal(true);
 			Code.expect(child.getAttributeNS('/foo', 'bar')).to.equal('baz');
+
+			Code.expect(child.hasAttributeNS('/foo', 'foo')).to.equal(false);
 			Code.expect(child.getAttributeNS('/foo', 'foo') || '').to.equal('');
+
+			Code.expect(child.hasAttributeNS('', 'foo')).to.equal(true);
 			Code.expect(child.getAttributeNS('', 'foo')).to.equal('bar');
+
+			Code.expect(child.hasAttribute('foo')).to.equal(true);
 			Code.expect(child.getAttribute('foo')).to.equal('bar');
 
 			done();
