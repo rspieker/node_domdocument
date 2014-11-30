@@ -8,7 +8,7 @@
 		<title>DOMDocument Tests</title>
 	</head>
 	<body>
-		<strong id="findme">Here be demons</strong>
+		<strong id="findme" class="multiple attributes">Here be demons</strong>
 		<![CDATA[ may contain <anything> ]]>
 	</body>
 </html>

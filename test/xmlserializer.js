@@ -45,4 +45,37 @@ lab.experiment('XMLSerializer', function(){
 		});
 	});
 
+	lab.test('Attribute quoting', function(done){
+		new DOMDocument().loadXML('<root noquote="test" single="my \' quote" double=\'my " quote\' quoted="multiple items" alsoquoted="this=special" />', function(error, document){
+
+			Code.expect(serialize(document)).to.equal('<root noquote="test" single="my \' quote" double=\'my " quote\' quoted="multiple items" alsoquoted="this=special"/>');
+			Code.expect(serialize(document, {format:'html'})).to.equal('<root noquote=test single="my \' quote" double=\'my " quote\' quoted="multiple items" alsoquoted="this=special"></root>');
+
+			done();
+		});
+	});
+
+	lab.test('Boolean attributes and autofill', function(done){
+		new DOMDocument().loadXML('<root selected="selected" empty="" disabled="" />', function(error, document){
+
+			Code.expect(serialize(document)).to.equal('<root selected="selected"/>');
+			Code.expect(serialize(document, {format:'html'})).to.equal('<root selected disabled></root>');
+
+			Code.expect(serialize(document, {removeEmptyAttributes:false})).to.equal('<root selected="selected" empty="" disabled=""/>');
+			Code.expect(serialize(document, {format:'html', removeEmptyAttributes:false})).to.equal('<root selected empty="" disabled></root>');
+
+			done();
+		});
+	});
+
+	lab.test('Self-closing, mandatory end-tags', function(done){
+		new DOMDocument().loadXML('<div id="case"><script type="text/javascript" src="/path/to/file.js"></script><br /></div>', function(error, document){
+
+			Code.expect(serialize(document)).to.equal('<div id="case"><script type="text/javascript" src="/path/to/file.js"/><br/></div>');
+			Code.expect(serialize(document, {format:'html'})).to.equal('<div id=case><script type=text/javascript src=/path/to/file.js></script><br></div>');
+
+			done();
+		});
+	});
+
 });
