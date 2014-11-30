@@ -1,8 +1,13 @@
 var Code = require('code'),
 	Lab = require('lab'),
 	lab = exports.lab = Lab.script(),
-	DOMDocument = require('./../lib/dom.js');
+	DOMDocument = require('./../lib/dom.js'),
+	XMLSerializer = require('./../lib/xmlserializer.js');
 
+function serialize(document, options)
+{
+	return new XMLSerializer().serializeToString(document, options);
+}
 
 lab.experiment('DocumentType', function(){
 	var html = '\n<html></html>',

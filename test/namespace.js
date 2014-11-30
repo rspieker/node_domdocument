@@ -14,9 +14,19 @@ lab.experiment('Namespace', function(){
 
 	lab.test('parse single default namespace', function(done){
 		new DOMDocument().loadXML('<root xmlns="/spul" />', function(error, document){
-			//  Node.isDefaultNamespace(...);
+
 			Code.expect(document.documentElement.isDefaultNamespace('/nope')).to.equal(false);
 			Code.expect(document.documentElement.isDefaultNamespace('/spul')).to.equal(true);
+
+			done();
+		});
+	});
+
+	lab.test('parse single non-default namespace', function(done){
+		new DOMDocument().loadXML('<root xmlns:spul="/spul" spul:attr="value" />', function(error, document){
+
+			Code.expect(document.documentElement.isDefaultNamespace('/nope')).to.equal(false);
+			Code.expect(document.documentElement.isDefaultNamespace('/spul')).to.equal(false);
 
 			done();
 		});
@@ -132,7 +142,8 @@ lab.experiment('Namespace', function(){
 			Code.expect(element.getAttributeNS('/c', 'e')).to.equal('f');
 			Code.expect(element.getAttributeNS('/c', 'g')).to.equal('h');
 
-			element = new XMLSerializer().serializeToString(document);
+			element = new XMLSerializer().serializeToString(document, {format:'xml'});
+//
 			Code.expect(element).to.equal('<root><node/><lab:node xmlns:lab="/lab" a="b" xmlns:d="/c" d:e="f" d:g="h" xmlns:xml="http://www.w3.org/XML/1998/namespace" xml:g="h" xmlns="/mine"/></root>');
 
 			done();

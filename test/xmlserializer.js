@@ -13,11 +13,53 @@ function serialize(document, options)
 
 lab.experiment('XMLSerializer', function(){
 
+	lab.experiment('docType', function(){
+		lab.test('no publicId, no systemId (HTML5)', function(done){
+			new DOMDocument().loadXML('<!DOCTYPE html>', function(error, document){
+				Code.expect(serialize(document)).to.equal('<!DOCTYPE html>');
+				Code.expect(serialize(document, {format:null})).to.equal('<!DOCTYPE html>');
+
+				done();
+			});
+		});
+
+		lab.test('publicId, systemId (HTML 4.01 Strict)', function(done){
+			new DOMDocument().loadXML('<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">', function(error, document){
+				Code.expect(serialize(document)).to.equal('<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">');
+				Code.expect(serialize(document, {format:null})).to.equal('<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">');
+
+				done();
+			});
+		});
+
+		lab.test('publicId, no systemId (HTML 5 - deprecated)', function(done){
+			new DOMDocument().loadXML('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0//EN">', function(error, document){
+				Code.expect(serialize(document)).to.equal('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0//EN">');
+				Code.expect(serialize(document, {format:null})).to.equal('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0//EN">');
+
+				done();
+			});
+		});
+
+		lab.test('no publicId, systemId (HTML 5 Legacy devices)', function(done){
+			new DOMDocument().loadXML('<!DOCTYPE html system "about:legacy-compat">', function(error, document){
+				Code.expect(serialize(document)).to.equal('<!DOCTYPE html SYSTEM "about:legacy-compat">');
+				Code.expect(serialize(document, {format:null})).to.equal('<!DOCTYPE html SYSTEM "about:legacy-compat">');
+
+				done();
+			});
+		});
+
+	});
+
 	lab.test('Comment', function(done){
 		new DOMDocument().loadXML('<!--comment-->', function(error, document){
 
 			Code.expect(serialize(document)).to.equal('');
 			Code.expect(serialize(document, {preserveComment: true})).to.equal('<!--comment-->');
+			Code.expect(serialize(document, {preserveComment: function(content){
+				return content === 'comment';
+			}})).to.equal('<!--comment-->');
 
 			done();
 		});
@@ -28,6 +70,14 @@ lab.experiment('XMLSerializer', function(){
 
 			Code.expect(serialize(document)).to.equal('<root><![CDATA[data]]></root>');
 			Code.expect(serialize(document, {preserveComment: true})).to.equal('<root><![CDATA[data]]></root>');
+
+			done();
+		});
+	});
+
+	lab.test('Whitespace preservation for specific element-names', function(done){
+		new DOMDocument().loadXML('<div>\n\t<pre>\n\t\ttest\n\t</pre>\n</div>', function(error, document){
+			Code.expect(serialize(document)).to.equal('<div> <pre>\n\t\ttest\n\t</pre> </div>');
 
 			done();
 		});
