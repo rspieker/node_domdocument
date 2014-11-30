@@ -21,9 +21,37 @@ lab.experiment('Namespace', function(){
 
 			done();
 		});
-
 	});
 
+/*
+	lab.test('attributes (namespaced and non-namespaced)', function(done){
+		new DOMDocument().loadXML('<root xmlns="/spul" xmlns:foo="/foo"><child foo="bar" foo:bar="baz" /></root>', function(error, document){
+			var child = document.getElementsByTagName('child')[0];
+
+// console.log(
+// 	child.___simple(function(){return this;}), child.nodeName, child.nodeType
+// );
+console.log(
+	'/foo', 'bar',
+	child.getAttributeNS('/foo', 'bar')
+);
+console.log(
+	'/foo', 'foo',
+	child.getAttributeNS('/foo', 'foo')
+);
+console.log(
+	'foo',
+	child.getAttribute('foo')
+);
+
+			Code.expect(child.getAttributeNS('/foo', 'bar')).to.equal('baz');
+			Code.expect(child.getAttributeNS('/foo', 'foo')).to.equal('');
+			Code.expect(child.getAttribute('foo')).to.equal('bar');
+
+			done();
+		});
+	});
+*/
 	lab.test('parse multiple default and prefixed namespaces', function(done){
 		new DOMDocument().loadXML(xml, function(error, document){
 			var root = document.documentElement;
