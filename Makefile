@@ -23,7 +23,7 @@ test-lint:
 
 #  Check all sources for a 'todo' and display those
 todo:
-	@grep -ir --exclude-dir=node_modules --exclude "*.html" todo * | cut -d: -f2- | tr "\t\/" " " | sed 's/^ *//';
+	@grep -ir --exclude-dir=node_modules --exclude-dir=report --exclude="*.html" todo * | cut -d: -f2- | tr "\t\/" " " | sed 's/^ *//';
 
 #  Generate the list of authors with the number of occurences in the git log (representing the amount of commits)
 commit-count:
