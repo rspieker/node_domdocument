@@ -5,6 +5,7 @@ var Code = require('code'),
 	DOMException = require('./../lib/dom/exception.js'),
 	XMLSerializer = require('./../lib/xmlserializer.js');
 
+
 lab.experiment('Namespace', function(){
 	var xml = '<?xml version="1.0" encoding="utf-8"?>\n' +
 			'<lab:root xmlns="/spul" xmlns:lab="/lab">' +
@@ -83,6 +84,100 @@ lab.experiment('Namespace', function(){
 		});
 	});
 
+	lab.test('redundant declaration', function(done){
+		new DOMDocument().loadXML('<root xmlns:lab="/lab" lab:attr="attrib"><lab:node xmlns:lab="/lab" lab:attr="attrib" /></root>', function(error, document){
+			var root = document.documentElement;
+
+			//  naming and attributes
+			Code.expect(root.localName).to.equal('root');
+			Code.expect(root.firstChild.localName).to.equal('node');
+			Code.expect(root.firstChild.prefix).to.equal('lab');
+			Code.expect(root.firstChild.nodeName).to.equal('lab:node');
+
+			Code.expect(root.hasAttributeNS('/lab', 'attr')).to.equal(true);
+			Code.expect(root.getAttributeNS('/lab', 'attr')).to.equal('attrib');
+
+			Code.expect(root.firstChild.hasAttributeNS('/lab', 'attr')).to.equal(true);
+			Code.expect(root.firstChild.getAttributeNS('/lab', 'attr')).to.equal('attrib');
+
+			Code.expect(
+				new XMLSerializer().serializeToString(document, {format:'xml'})
+			).to.equal(
+				'<root xmlns:lab="/lab" lab:attr="attrib"><lab:node lab:attr="attrib"/></root>'
+			);
+
+			done();
+		});
+	});
+
+	lab.test('redundant declaration removal', function(done){
+		new DOMDocument().loadXML('<root xmlns:lab="/lab" lab:attr="attrib"><lab:node lab:attr="attrib" /></root>', function(error, document){
+			var root = document.documentElement,
+				i;
+
+			//  naming and attributes
+			Code.expect(root.localName).to.equal('root');
+			Code.expect(root.firstChild.localName).to.equal('node');
+			Code.expect(root.firstChild.prefix).to.equal('lab');
+			Code.expect(root.firstChild.nodeName).to.equal('lab:node');
+
+			Code.expect(root.hasAttributeNS('/lab', 'attr')).to.equal(true);
+			Code.expect(root.getAttributeNS('/lab', 'attr')).to.equal('attrib');
+
+			Code.expect(root.firstChild.hasAttributeNS('/lab', 'attr')).to.equal(true);
+			Code.expect(root.firstChild.getAttributeNS('/lab', 'attr')).to.equal('attrib');
+
+			for (i = 0; i < root.firstChild.attributes.length; ++i)
+				if (root.firstChild.attributes.item(i).name === 'lab:attr')
+					root.firstChild.removeAttributeNode(
+						root.firstChild.attributes.item(i)
+					);
+
+			Code.expect(root.firstChild.hasAttributeNS('/lab', 'attr')).to.equal(false);
+			Code.expect(root.firstChild.getAttributeNS('/lab', 'attr')).to.equal(null);
+
+			Code.expect(
+				new XMLSerializer().serializeToString(document, {format:'xml'})
+			).to.equal(
+				'<root xmlns:lab="/lab" lab:attr="attrib"><lab:node/></root>'
+			);
+
+			done();
+		});
+	});
+
+	lab.test('same prefix, different namespace', function(done){
+		new DOMDocument().loadXML('<root xmlns:lab="/lab" lab:attr="attrib"><lab:node  xmlns:lab="/labs" lab:attr="attrib" /></root>', function(error, document){
+			var root = document.documentElement;
+
+			//  naming and attributes
+			Code.expect(root.localName).to.equal('root');
+			Code.expect(root.firstChild.localName).to.equal('node');
+			Code.expect(root.firstChild.prefix).to.equal('lab');
+			Code.expect(root.firstChild.nodeName).to.equal('lab:node');
+
+			Code.expect(root.hasAttributeNS('/lab', 'attr')).to.equal(true);
+			Code.expect(root.getAttributeNS('/lab', 'attr')).to.equal('attrib');
+
+			Code.expect(root.hasAttributeNS('/labs', 'attr')).to.equal(false);
+			Code.expect(root.getAttributeNS('/labs', 'attr')).to.equal(null);
+
+			Code.expect(root.firstChild.hasAttributeNS('/lab', 'attr')).to.equal(false);
+			Code.expect(root.firstChild.getAttributeNS('/lab', 'attr')).to.equal(null);
+
+			Code.expect(root.firstChild.hasAttributeNS('/labs', 'attr')).to.equal(true);
+			Code.expect(root.firstChild.getAttributeNS('/labs', 'attr')).to.equal('attrib');
+
+			Code.expect(
+				new XMLSerializer().serializeToString(document, {format:'xml'})
+			).to.equal(
+				'<root xmlns:lab="/lab" lab:attr="attrib"><lab:node xmlns:lab="/labs" lab:attr="attrib"/></root>'
+			);
+
+			done();
+		});
+	});
+
 	lab.test('creating new elements and attributes', function(done){
 		new DOMDocument().loadXML('<root />', function(error, document){
 			var element;
@@ -152,8 +247,8 @@ lab.experiment('Namespace', function(){
 			Code.expect(element.getAttributeNS('/c', 'g')).to.equal('h');
 
 			element = new XMLSerializer().serializeToString(document, {format:'xml'});
-//
-			Code.expect(element).to.equal('<root><node/><lab:node xmlns:lab="/lab" a="b" xmlns:d="/c" d:e="f" d:g="h" xmlns:xml="http://www.w3.org/XML/1998/namespace" xml:g="h" xmlns="/mine"/></root>');
+
+			Code.expect(element).to.equal('<root><node/><lab:node xmlns:d="/c" xmlns:lab="/lab" xmlns:xml="http://www.w3.org/XML/1998/namespace" a="b" d:e="f" d:g="h" xml:g="h"/></root>');
 
 			done();
 		});
