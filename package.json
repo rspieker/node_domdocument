@@ -7,7 +7,6 @@
   "keywords": [
     "dom",
     "xml",
-    "expat",
     "domdocument"
   ],
   "author": {
@@ -15,8 +14,8 @@
     "email": "rogier+domdocument@konfirm.io"
   },
   "scripts": {
-    "test": "make test-report",
-    "posttest": "[ -e test-report.html ] && open test-report.html"
+    "test": "./node_modules/.bin/lab -f -t 100 -m 3000",
+    "test-coverage": "./node_modules/.bin/lab -f -r html -m 3000 -o report.html"
   },
   "repository": {
     "type": "git",
